@@ -25,7 +25,7 @@ async def send_large_message(ctx: commands.Context, response: str):
 
         # Defer the interaction if it hasn't been deferred
         if not ctx.response.is_done():
-            await ctx.defer()
+            await ctx.defer(ephemeral=True)
         # Send each chunk as a separate message
         for chunk in chunks:
             await ctx.followup.send(chunk, ephemeral=True)
