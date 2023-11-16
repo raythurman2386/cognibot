@@ -5,7 +5,7 @@ from db.backup import backup_database
 from db.database import add_user_to_table, init_db, is_user_in_table
 
 from utils.openai import askgpt, imgGeneration
-from utils.utils import get_user_id, send_large_message
+from utils.utils import send_large_message
 
 load_dotenv()
 bot = discord.Bot(intents=discord.Intents.all())
@@ -39,7 +39,6 @@ async def hello(ctx):
 @bot.slash_command(
     name="chatgpt",
     description="Send a promt to ChatGPT",
-    help="Send a prompt to generate an image with Dall E 3",
     aliases=["aiimg", "img"],
 )
 async def chat_gpt(ctx, prompt: str):
