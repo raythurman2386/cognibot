@@ -21,12 +21,11 @@ async def on_ready():
 
 
 @bot.event
-async def on_message(message):
-    if not is_user_in_table(message.author.id, "authorized_users"):
-        return
-
-    if not message.channel.id == allowed_channel_id:
-        return
+async def on_message(message: discord.Message):
+    if str(message.channel.id) == allowed_channel_id and is_user_in_table(
+        str(message.author.id), "authorized_users"
+    ):
+        await bot.process_commands(message)
 
 
 cogs_list = ["greetings", "moderation", "openai"]
