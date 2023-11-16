@@ -5,19 +5,13 @@ from utils.openai import askgpt, imgGeneration
 from utils.utils import send_large_message
 
 
-class Openai(
-    commands.Cog
-):  # create a class for our cog that inherits from commands.Cog
-    # this class is used to create a cog, which is a module that can be added to the bot
-
-    def __init__(
-        self, bot
-    ):  # this is a special method that is called when the cog is loaded
+class Openai(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
 
     @discord.slash_command(
         name="chatgpt",
-        description="Send a promt to ChatGPT",
+        description="Send a prompt to ChatGPT",
     )
     async def chatgpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
@@ -26,7 +20,7 @@ class Openai(
 
     @discord.slash_command(
         name="dalle",
-        description="Send a promt to Dall E 3",
+        description="Send a prompt to Dall E 3",
     )
     async def dalle(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
@@ -34,5 +28,5 @@ class Openai(
         await send_large_message(ctx, image_url)
 
 
-def setup(bot):  # this is called by Pycord to setup the cog
-    bot.add_cog(Openai(bot))  # add the cog to the bot
+def setup(bot):
+    bot.add_cog(Openai(bot))

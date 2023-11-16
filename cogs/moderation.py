@@ -5,14 +5,8 @@ from db.backup import backup_database
 from db.database import add_user_to_table, is_user_in_table
 
 
-class Moderation(
-    commands.Cog
-):  # create a class for our cog that inherits from commands.Cog
-    # this class is used to create a cog, which is a module that can be added to the bot
-
-    def __init__(
-        self, bot
-    ):  # this is a special method that is called when the cog is loaded
+class Moderation(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
 
     @discord.slash_command(
