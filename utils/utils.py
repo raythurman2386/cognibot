@@ -23,10 +23,13 @@ async def send_large_message(ctx: commands.Context, response: str):
         # Split the response into chunks of 2000 characters each
         chunks = [response[i : i + 2000] for i in range(0, len(response), 2000)]
 
+        # Defer the interaction if it hasn't been deferred
+        if not ctx.response.is_done():
+            await ctx.defer()
         # Send each chunk as a separate message
         for chunk in chunks:
-            await ctx.followup.send(chunk)
+            await ctx.followup.send(chunk, ephemeral=True)
     except discord.errors.HTTPException:
-        await ctx.reply(
+        await ctx.followup.send(
             "The response is too large to display. Please try with a shorter prompt."
         )
