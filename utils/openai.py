@@ -1,6 +1,10 @@
 import os
+
+from dotenv import load_dotenv
 from db.database import add_message, get_chat_log
 from openai import OpenAI
+
+load_dotenv()
 
 env_vars = {
     "gpt_model": os.environ.get("GPT_MODEL") or "gpt-3.5-turbo",
@@ -28,7 +32,7 @@ def imgGeneration(prompt):
     try:
         response = client.images.generate(
             model=env_vars["image_model"],
-            prompt=prompt.content,
+            prompt=prompt,
             size=env_vars["image_size"],
             quality=env_vars["image_quality"],
             n=1,
@@ -42,11 +46,11 @@ def imgGeneration(prompt):
 
 def askgpt(question):
     try:
-        if len(question.content) == 4:
+        if len(question) == 0:
             raise CustomError("Please provide a question for ChatGPT!")
 
         # Insert the user's message into the database
-        add_message("user", question.content)
+        add_message("user", question)
 
         # Retrieve the chat log from the database
         chat_log = get_chat_log()

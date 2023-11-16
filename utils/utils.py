@@ -25,7 +25,7 @@ async def send_large_message(ctx: commands.Context, response: str):
 
         # Send each chunk as a separate message
         for chunk in chunks:
-            await ctx.send(chunk)
+            await ctx.followup.send(chunk)
     except discord.errors.HTTPException:
         await ctx.reply(
             "The response is too large to display. Please try with a shorter prompt."
