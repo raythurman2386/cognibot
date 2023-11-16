@@ -12,17 +12,6 @@ class Openai(commands.Cog):
         self.bot = bot
         self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author == self.bot:
-            return
-
-        if not is_user_in_table(message.author.id, "authorized_users"):
-            return
-
-        if not message.channel.id == self.allowed_channel_id:
-            return
-
     @discord.slash_command(
         name="chatgpt",
         description="Send a prompt to ChatGPT",

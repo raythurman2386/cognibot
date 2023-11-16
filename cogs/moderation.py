@@ -10,17 +10,6 @@ class Moderation(commands.Cog):
         self.bot = bot
         self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author == self.bot:
-            return
-
-        if not is_user_in_table(message.author.id, "moderators"):
-            return
-
-        if not message.channel.id == self.allowed_channel_id:
-            return
-
     @discord.slash_command(
         name="auth",
         description="Authorize user to use chat gpt",
