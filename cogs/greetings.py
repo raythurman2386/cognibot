@@ -8,15 +8,15 @@ class Greetings(commands.Cog):
 
     @discord.slash_command()
     async def hello(self, ctx):
-        await ctx.send("Hello!")
+        await ctx.followup.send("Hello!")
 
     @discord.slash_command()
     async def goodbye(self, ctx):
-        await ctx.respond("Goodbye!")
+        await ctx.followup.send("Goodbye!")
 
     @discord.user_command()
     async def greet(self, ctx, member: discord.Member):
-        await ctx.respond(f"{ctx.author.mention} says hello to {member.mention}!")
+        await ctx.followup.send(f"{ctx.author.mention} says hello to {member.mention}!")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

@@ -8,6 +8,18 @@ from db.database import add_user_to_table, is_user_in_table
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author == self.bot:
+            return
+
+        if not is_user_in_table(message.author.id, "moderators"):
+            return
+
+        if not message.channel.id == self.allowed_channel_id:
+            return
 
     @discord.slash_command(
         name="auth",
