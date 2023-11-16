@@ -29,7 +29,7 @@ class Moderation(commands.Cog):
         name="addmod",
         description="Add moderator for Bot",
     )
-    async def addmod(self, ctx, member: discord.Member):
+    async def add_mod(self, ctx, member: discord.Member):
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "moderators"):
             user_id = str(member.id)

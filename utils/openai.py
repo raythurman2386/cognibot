@@ -28,7 +28,7 @@ def handle_error(e):
         return "Blimey! Something went wrong: " + str(e)
 
 
-def imgGeneration(prompt):
+def img_generation(prompt):
     try:
         response = client.images.generate(
             model=env_vars["image_model"],
@@ -44,7 +44,7 @@ def imgGeneration(prompt):
         return handle_error(e)
 
 
-def askgpt(question):
+def ask_gpt(question):
     try:
         if len(question) == 0:
             raise CustomError("Please provide a question for ChatGPT!")

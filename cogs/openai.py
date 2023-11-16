@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from utils.openai import askgpt, imgGeneration
+from utils.openai import ask_gpt, img_generation
 from utils.utils import send_large_message
 
 
@@ -13,18 +13,18 @@ class Openai(commands.Cog):
         name="chatgpt",
         description="Send a prompt to ChatGPT",
     )
-    async def chatgpt(self, ctx, prompt):
+    async def chat_gpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
-        answer = askgpt(prompt)
+        answer = ask_gpt(prompt)
         await send_large_message(ctx, answer)
 
     @discord.slash_command(
         name="dalle",
         description="Send a prompt to Dall E 3",
     )
-    async def dalle(self, ctx, prompt):
+    async def dall_e(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
-        image_url = imgGeneration(prompt)
+        image_url = img_generation(prompt)
         await send_large_message(ctx, image_url)
 
 
