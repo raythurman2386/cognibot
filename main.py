@@ -10,6 +10,11 @@ owner_id = os.environ.get("OWNER_ID")
 allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
 
 
+cogs_list = ["greetings", "moderation", "openai"]
+for cog in cogs_list:
+    bot.load_extension(f"cogs.{cog}")
+
+
 @bot.event
 async def on_ready():
     print(f"{bot.user} is ready and online!")
@@ -26,11 +31,6 @@ async def on_message(message: discord.Message):
         str(message.author.id), "authorized_users"
     ):
         await bot.process_commands(message)
-
-
-cogs_list = ["greetings", "moderation", "openai"]
-for cog in cogs_list:
-    bot.load_extension(f"cogs.{cog}")
 
 
 token = os.environ.get("DISCORD_TOKEN")

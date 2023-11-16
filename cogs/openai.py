@@ -17,28 +17,18 @@ class Openai(commands.Cog):
         description="Send a prompt to ChatGPT",
     )
     async def chat_gpt(self, ctx, prompt):
-        if is_user_in_table(prompt.author.id, "authorized_users"):
-            await ctx.defer(ephemeral=True)
-            answer = ask_gpt(prompt)
-            await send_large_message(ctx, answer)
-        else:
-            await ctx.followup.send(
-                "You are not authorized to use ChatGPT at this time."
-            )
+        await ctx.defer(ephemeral=True)
+        answer = ask_gpt(prompt)
+        await send_large_message(ctx, answer)
 
     @discord.slash_command(
         name="dalle",
         description="Send a prompt to Dall E 3",
     )
     async def dall_e(self, ctx, prompt):
-        if is_user_in_table(prompt.author.id, "authorized_users"):
-            await ctx.defer(ephemeral=True)
-            image_url = img_generation(prompt)
-            await send_large_message(ctx, image_url)
-        else:
-            await ctx.followup.send(
-                "You are not authorized to use DALL E 3 at this time."
-            )
+        await ctx.defer(ephemeral=True)
+        image_url = img_generation(prompt)
+        await send_large_message(ctx, image_url)
 
 
 def setup(bot):
