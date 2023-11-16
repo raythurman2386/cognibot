@@ -22,11 +22,3 @@ def backup_database(db_path, backup_folder, max_size_mb=1024):
     backup_path = os.path.join(backup_folder, f"chat_log_backup_{timestamp}.db")
     shutil.copy2(db_path, backup_path)
     print(f"Database backed up to {backup_path}")
-
-
-base_dir = os.getcwd()
-db_path = f"{base_dir}/chat_log.db"
-backup_folder = (
-    f"{base_dir}/backups/"  # Path to the folder where you want to store your backups
-)
-backup_database(db_path, backup_folder)
