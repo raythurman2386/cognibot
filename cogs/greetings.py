@@ -8,14 +8,17 @@ class Greetings(commands.Cog):
 
     @discord.slash_command()
     async def hello(self, ctx):
+        await ctx.defer(ephemeral=True)
         await ctx.followup.send("Hello!")
 
     @discord.slash_command()
     async def goodbye(self, ctx):
+        await ctx.defer(ephemeral=True)
         await ctx.followup.send("Goodbye!")
 
     @discord.user_command()
     async def greet(self, ctx, member: discord.Member):
+        await ctx.defer(ephemeral=True)
         await ctx.followup.send(f"{ctx.author.mention} says hello to {member.mention}!")
 
     @commands.Cog.listener()
