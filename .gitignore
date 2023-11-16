@@ -26,6 +26,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.db
 
 # Installer logs
 pip-log.txt
