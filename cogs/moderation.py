@@ -19,7 +19,7 @@ class Moderation(
         name="auth",
         description="Authorize user to use chat gpt",
     )
-    async def auth(ctx, member: discord.Member):
+    async def auth(self, ctx, member: discord.Member):
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "moderators"):
             user_id = str(member.id)
@@ -35,7 +35,7 @@ class Moderation(
         name="addmod",
         description="Add moderator for Bot",
     )
-    async def addmod(ctx, member: discord.Member):
+    async def addmod(self, ctx, member: discord.Member):
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "moderators"):
             user_id = str(member.id)
@@ -55,7 +55,7 @@ class Moderation(
         aliases=[],
         hidden=True,
     )
-    async def backup(ctx):
+    async def backup(self, ctx):
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "moderators"):
             base_dir = os.getcwd()

@@ -12,7 +12,7 @@ class Greetings(
     ):  # this is a special method that is called when the cog is loaded
         self.bot = bot
 
-    @commands.command()  # creates a prefixed command
+    @discord.slash_command()  # creates a prefixed command
     async def hello(
         self, ctx
     ):  # all methods now must have both self and ctx parameters
