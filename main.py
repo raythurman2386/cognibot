@@ -9,7 +9,7 @@ bot = discord.Bot(intents=discord.Intents.all())
 owner_id = os.environ.get("OWNER_ID")
 
 
-cogs_list = ["greetings", "moderation", "openai"]
+cogs_list = ["greetings", "moderation", "openai", "adventure", "guessing_game"]
 for cog in cogs_list:
     bot.load_extension(f"cogs.{cog}")
 
