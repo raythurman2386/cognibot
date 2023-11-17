@@ -6,20 +6,41 @@ class AdventureGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="adventure", help="Embark on a text adventure!")
+    @discord.slash_command(
+        name="adventure",
+        description="Embark on a text adventure!",
+        help="Embark on a text adventure!",
+    )
     async def play_adventure_game(self, ctx):
-        await ctx.send(
+        await ctx.defer(ephemeral=True)
+        await ctx.followup.send(
             "Welcome to the Text Adventure Game! You find yourself in a mysterious land with multiple paths."
         )
 
-        choices = {"1": "Take the left path.", "2": "Take the right path."}
+        choices = {
+            "start": {"1": "Take the left path.", "2": "Take the right path."},
+            "map": {"1": "Take the left path.", "2": "Take the right path."},
+            "danger": {"1": "Take the left path.", "2": "Take the right path."},
+            "dark_path": {"1": "Take the left path.", "2": "Take the right path."},
+            "riddle": {"1": "Take the left path.", "2": "Take the right path."},
+            "hidden_passage": {"1": "Take the left path.", "2": "Take the right path."},
+        }
 
         current_scene = "start"
 
         while True:
-            await ctx.send(
-                f"\n**{choices[current_scene]}**\n(Type the number corresponding to your choice)"
-            )
+            if current_scene not in choices:
+                print(f"Invalid value of current_scene: {current_scene}")
+                break
+
+            if current_scene == "start":
+                await ctx.send(
+                    f"\n**{choices[current_scene]}**\n(Type the number corresponding to your choice)"
+                )
+            else:
+                await ctx.send(
+                    f"\n**{choices[current_scene]}**\n(Type the number corresponding to your choice)"
+                )
 
             choice = await self.bot.wait_for(
                 "message",

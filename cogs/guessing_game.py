@@ -7,9 +7,14 @@ class GuessingGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="guess", help="Play the number guessing game!")
+    @discord.slash_command(
+        name="guess",
+        description="Play the number guessing game!",
+        help="Play the number guessing game!",
+    )
     async def play_guessing_game(self, ctx):
-        await ctx.send(
+        await ctx.defer(ephemeral=True)
+        await ctx.followup.send(
             "Welcome to the Number Guessing Game! I've selected a number between 1 and 100. Try to guess it!"
         )
 
@@ -36,12 +41,10 @@ class GuessingGame(commands.Cog):
                     await ctx.send("Too low! Try again.")
                 else:
                     await ctx.send("Too high! Try again.")
-
             except TimeoutError:
                 await ctx.send(
-                    f"Time's up! The game has ended. The correct number was {number_to_guess}."
+                    f"You failed to quess the correct number {number_to_guess} in {attempts} attempts."
                 )
-                break
 
 
 def setup(bot):
