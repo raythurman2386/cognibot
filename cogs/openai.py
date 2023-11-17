@@ -18,8 +18,11 @@ class Openai(commands.Cog):
     )
     async def chat_gpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
-        answer = ask_gpt(prompt)
-        await send_large_message(ctx, answer)
+        if is_user_in_table(str(ctx.author.id), "authorized_users"):
+            answer = ask_gpt(prompt)
+            await send_large_message(ctx, answer)
+        else:
+            await ctx.followup.send("You are not authorized for GPT commands")
 
     @discord.slash_command(
         name="dalle",
@@ -27,8 +30,16 @@ class Openai(commands.Cog):
     )
     async def dall_e(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
-        image_url = img_generation(prompt)
-        await send_large_message(ctx, image_url)
+        if is_user_in_table(str(ctx.author.id), "authorized_users"):
+            image_url = img_generation(prompt)
+            embed = discord.Embed(
+                title="AI Image", description=prompt, color=ctx.author.top_role.color
+            )
+            embed.set_image(url=image_url)
+            await ctx.followup.send("Generation Complete!")
+            await ctx.send(reference=ctx.message, embed=embed)
+        else:
+            await ctx.followup.send("You are not authorized for GPT commands")
 
 
 def setup(bot):
