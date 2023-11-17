@@ -28,7 +28,11 @@ class Openai(commands.Cog):
     async def dall_e(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
         image_url = img_generation(prompt)
-        await send_large_message(ctx, image_url)
+        embed = discord.Embed(
+            title="AI Image", description=prompt, color=ctx.author.top_role.color
+        )
+        embed.set_image(url=image_url)
+        await ctx.followup.send(reference=ctx.message, embed=embed)
 
 
 def setup(bot):
