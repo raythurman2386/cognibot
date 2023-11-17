@@ -1,7 +1,6 @@
 import os
 import discord
 from discord.ext import commands
-from db.database import is_user_in_table
 
 from utils.openai import ask_gpt, img_generation
 from utils.utils import send_large_message
@@ -32,7 +31,8 @@ class Openai(commands.Cog):
             title="AI Image", description=prompt, color=ctx.author.top_role.color
         )
         embed.set_image(url=image_url)
-        await ctx.followup.send(reference=ctx.message, embed=embed)
+        await ctx.followup.send("Generation Complete!")
+        await ctx.send(reference=ctx.message, embed=embed)
 
 
 def setup(bot):
