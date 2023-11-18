@@ -11,6 +11,7 @@
     "format": "prettier \"**/*.{css,js,json,jsx,ts,tsx}\""
   },
   "dependencies": {
+    "geist": "^1.1.0",
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18"
