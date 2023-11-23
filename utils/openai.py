@@ -99,5 +99,14 @@ def ask_claude(question):
         add_message("assistant", answer)
 
         return answer
+    except anthropic.APIConnectionError as e:
+        handle_error("The server could not be reached")
+        print(e.__cause__)  # an underlying Exception, likely raised within httpx.
+    except anthropic.RateLimitError as e:
+        handle_error("A 429 status code was received; we should back off a bit.")
+    except anthropic.APIStatusError as e:
+        handle_error("Another non-200-range status code was received")
+        print(e.status_code)
+        print(e.response)
     except Exception as e:
         return handle_error(e)
