@@ -1,4 +1,3 @@
-import os
 import discord
 from discord.ext import commands
 from db.database import is_user_in_table
@@ -10,7 +9,6 @@ from utils.utils import send_large_message
 class Anthropic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
 
     @discord.slash_command(
         name="claude",
