@@ -33,3 +33,15 @@ async def send_large_message(ctx: commands.Context, response: str):
         await ctx.followup.send(
             "The response is too large to display. Please try with a shorter prompt."
         )
+
+
+class CustomError(Exception):
+    pass
+
+
+def handle_error(e):
+    if isinstance(e, CustomError):
+        return str(e)
+    else:
+        # Log the error or handle it as needed
+        return "Blimey! Something went wrong: " + str(e)
