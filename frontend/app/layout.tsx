@@ -34,7 +34,7 @@ export default function RootLayout({
         <header className="text-center py-16">
           <h1 className="text-4xl font-bold">Welcome to CogniBot</h1>
           <p className="mt-4 text-lg">
-            Your friendly Discord bot powered by OpenAI`&apos;`s API for text and image
+            Your friendly Discord bot powered by OpenAI&apos;s API for text and image
             generation.
           </p>
           <Link
