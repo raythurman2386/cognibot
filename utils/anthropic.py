@@ -4,7 +4,7 @@ from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
 from dotenv import load_dotenv
 from db.database import add_message, get_chat_log
 
-from utils.openai import CustomError, handle_error
+from utils.utils import CustomError, handle_error
 
 load_dotenv()
 

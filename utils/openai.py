@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from db.database import add_message, get_chat_log
 from openai import OpenAI
 
+from utils.utils import CustomError, handle_error
+
 load_dotenv()
 
 env_vars = {
@@ -14,18 +16,6 @@ env_vars = {
 }
 
 client = OpenAI()
-
-
-class CustomError(Exception):
-    pass
-
-
-def handle_error(e):
-    if isinstance(e, CustomError):
-        return str(e)
-    else:
-        # Log the error or handle it as needed
-        return "Blimey! Something went wrong: " + str(e)
 
 
 def img_generation(prompt):

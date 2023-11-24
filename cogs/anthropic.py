@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from db.database import is_user_in_table
 
-from utils.openai import ask_claude
+from utils.anthropic import ask_claude
 from utils.utils import send_large_message
 
 
