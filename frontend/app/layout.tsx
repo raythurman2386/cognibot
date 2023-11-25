@@ -5,7 +5,8 @@ import { Navbar, Header, Footer } from "./components";
 
 export const metadata: Metadata = {
   title: "CogniBot",
-  description: "The worlds smartest Discord bot. Chat with GPT-4-Turbo from OpenAI or Claude 2.1 from Anthropic!",
+  description:
+    "The worlds smartest Discord bot. Chat with GPT-4-Turbo from OpenAI or Claude 2.1 from Anthropic!",
 };
 
 export default function RootLayout({
