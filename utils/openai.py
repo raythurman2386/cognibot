@@ -6,10 +6,13 @@ from openai import OpenAI
 import cloudinary
 import cloudinary.uploader
 import requests
+import logging
 
+# Configure logging
 from utils.utils import CustomError, handle_error
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO)
 
 env_vars = {
     "gpt_model": os.environ.get("GPT_MODEL") or "gpt-3.5-turbo",
@@ -24,6 +27,12 @@ env_vars = {
 }
 
 client = OpenAI()
+
+cloudinary.config(
+    cloud_name=env_vars["cloud_name"],
+    api_key=env_vars["cloudinary_api_key"],
+    api_secret=env_vars["cloudinary_api_secret"],
+)
 
 
 def img_generation(prompt):
@@ -67,24 +76,26 @@ def ask_gpt(question):
 
 
 def upload_image(image_url):
-    cloudinary.config(
-        cloud_name=env_vars["cloud_name"],
-        api_key=env_vars["cloudinary_api_key"],
-        api_secret=env_vars["cloudinary_api_secret"],
-    )
-    
     folder_name = env_vars["cloudinary_folder"]
-    
-    response = cloudinary.uploader.upload(image_url, folder=folder_name)
-    deploy_gallery()
-    return response
+    try:
+        response = cloudinary.uploader.upload(image_url, folder=folder_name)
+        logging.info("Image uploaded successfully")
+        deploy_gallery()
+        return response
+    except Exception as e:
+        logging.error(f"Failed to upload image: {e}")
+        raise
     
 
 def deploy_gallery():
     deploy_hook_url = env_vars["deploy_hook"]
-    response = requests.post(deploy_hook_url)
     
-    if response.status_code == 201:
-        print("Deploy triggered successfully")
-    else:
-        print(f"Failed to trigger deploy. Status code: {response.status_code}")
+    try:
+        response = requests.post(deploy_hook_url)
+        if response.status_code == 200:  # Check the expected status code for your deploy hook
+            logging.info("Deploy triggered successfully")
+        else:
+            logging.warning(f"Failed to trigger deploy. Status code: {response.status_code}")
+    except Exception as e:
+        logging.error(f"Failed to trigger deploy: {e}")
+        raise
