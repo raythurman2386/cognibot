@@ -39,7 +39,9 @@ class Openai(commands.Cog):
                 handle_error(e)
             finally:
                 embed = discord.Embed(
-                    title="AI Image", description=prompt, color=ctx.author.top_role.color
+                    title="AI Image",
+                    description=prompt,
+                    color=ctx.author.top_role.color,
                 )
                 embed.set_image(url=image_url)
                 await ctx.followup.send("Generation Complete!")
