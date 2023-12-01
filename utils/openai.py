@@ -12,7 +12,6 @@ import logging
 from utils.utils import CustomError, handle_error
 
 load_dotenv()
-logging.basicConfig(level=logging.INFO)
 
 env_vars = {
     "gpt_model": os.environ.get("GPT_MODEL") or "gpt-3.5-turbo",
@@ -92,7 +91,7 @@ def deploy_gallery():
     
     try:
         response = requests.post(deploy_hook_url)
-        if response.status_code == 200:  # Check the expected status code for your deploy hook
+        if response.status_code == 201:  
             logging.info("Deploy triggered successfully")
         else:
             logging.warning(f"Failed to trigger deploy. Status code: {response.status_code}")
