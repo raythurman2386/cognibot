@@ -3,6 +3,9 @@ import os
 from dotenv import load_dotenv
 from db.database import add_message, get_chat_log
 from openai import OpenAI
+import cloudinary
+import cloudinary.uploader
+import requests
 
 from utils.utils import CustomError, handle_error
 
@@ -13,6 +16,11 @@ env_vars = {
     "image_model": os.environ.get("IMAGE_MODEL") or "dall-e-3",
     "image_size": os.environ.get("IMAGE_SIZE") or "1024x1024",
     "image_quality": os.environ.get("IMAGE_QUALITY") or "standard",
+    "cloud_name": os.environ.get('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'),
+    "cloudinary_api_key": os.environ.get('CLOUDINARY_API_KEY'),
+    "cloudinary_api_secret": os.environ.get('CLOUDINARY_API_SECRET'),
+    "cloudinary_folder": os.environ.get('CLOUDINARY_FOLDER'),
+    "deploy_hook": os.environ.get("DEPLOY_HOOK")
 }
 
 client = OpenAI()
@@ -56,3 +64,27 @@ def ask_gpt(question):
         return answer
     except Exception as e:
         return handle_error(e)
+
+
+def upload_image(image_url):
+    cloudinary.config(
+        cloud_name=env_vars["cloud_name"],
+        api_key=env_vars["cloudinary_api_key"],
+        api_secret=env_vars["cloudinary_api_secret"],
+    )
+    
+    folder_name = env_vars["cloudinary_folder"]
+    
+    response = cloudinary.uploader.upload(image_url, folder=folder_name)
+    deploy_gallery()
+    return response
+    
+
+def deploy_gallery():
+    deploy_hook_url = env_vars["deploy_hook"]
+    response = requests.post(deploy_hook_url)
+    
+    if response.status_code == 201:
+        print("Deploy triggered successfully")
+    else:
+        print(f"Failed to trigger deploy. Status code: {response.status_code}")
