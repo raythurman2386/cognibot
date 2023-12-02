@@ -27,7 +27,6 @@ async def on_ready():
             add_user_to_table(owner_id_str, table)
 
 
-# Another example
 if __name__ == "__main__":
     app_logger.info("Script started")
     try:
