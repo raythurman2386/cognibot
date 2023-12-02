@@ -27,25 +27,31 @@ class Openai(commands.Cog):
     @discord.slash_command(
         name="dalle",
         description="Send a prompt to Dall E 3",
+        help="Send a prompt and an optional quality(standard or hd) and an optional size(1024x1024 | 1024x1792 | 1792x1024) for image generation. Will default to standard quality and a square image if parameters aren't included."
     )
-    async def dall_e(self, ctx, prompt):
+    async def dall_e(self, ctx, prompt, quality='standard', size='1024x1024'):
+        allowed_qualities = {'standard', 'hd'}
+        allowed_sizes = {'1024x1024', '1792x1024', '1024x1792'}
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "authorized_users"):
-            image_url = img_generation(prompt)
-            try:
-                saved_image = await upload_image(image_url)
-                await deploy_gallery()
-            except Exception as e:
-                handle_error(e)
-            finally:
-                embed = discord.Embed(
-                    title="AI Image",
-                    description=prompt,
-                    color=ctx.author.top_role.color,
-                )
-                embed.set_image(url=image_url)
-                await ctx.followup.send("Generation Complete!")
-                await ctx.send(reference=ctx.message, embed=embed)
+            if quality in allowed_qualities and size in allowed_sizes:
+                try:
+                    image_url = img_generation(prompt, quality, size)
+                    saved_image = await upload_image(image_url)
+                    await deploy_gallery()
+                except Exception as e:
+                    handle_error(e)
+                finally:
+                    embed = discord.Embed(
+                        title="AI Image",
+                        description=prompt,
+                        color=ctx.author.top_role.color,
+                    )
+                    embed.set_image(url=image_url)
+                    await ctx.followup.send("Generation Complete!")
+                    await ctx.send(reference=ctx.message, embed=embed)
+            else:
+                await ctx.followup.send('Invalid quality or size.')
         else:
             await ctx.followup.send("You are not authorized for GPT commands")
 

@@ -19,13 +19,13 @@ cloudinary.config(
 )
 
 
-def img_generation(prompt):
+def img_generation(prompt, quality, size):
     try:
         response = client.images.generate(
             model=env_vars["image_model"],
             prompt=prompt,
-            size=env_vars["image_size"],
-            quality=env_vars["image_quality"],
+            size=size,
+            quality=quality,
             n=1,
         )
 
