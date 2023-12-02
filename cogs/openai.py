@@ -27,11 +27,11 @@ class Openai(commands.Cog):
     @discord.slash_command(
         name="dalle",
         description="Send a prompt to Dall E 3",
-        help="Send a prompt and an optional quality(standard or hd) and an optional size(1024x1024 | 1024x1792 | 1792x1024) for image generation. Will default to standard quality and a square image if parameters aren't included."
+        help="Send a prompt and an optional quality(standard or hd) and an optional size(1024x1024 | 1024x1792 | 1792x1024) for image generation. Will default to standard quality and a square image if parameters aren't included.",
     )
-    async def dall_e(self, ctx, prompt, quality='standard', size='1024x1024'):
-        allowed_qualities = {'standard', 'hd'}
-        allowed_sizes = {'1024x1024', '1792x1024', '1024x1792'}
+    async def dall_e(self, ctx, prompt, quality="standard", size="1024x1024"):
+        allowed_qualities = {"standard", "hd"}
+        allowed_sizes = {"1024x1024", "1792x1024", "1024x1792"}
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "authorized_users"):
             if quality in allowed_qualities and size in allowed_sizes:
@@ -51,7 +51,7 @@ class Openai(commands.Cog):
                     await ctx.followup.send("Generation Complete!")
                     await ctx.send(reference=ctx.message, embed=embed)
             else:
-                await ctx.followup.send('Invalid quality or size.')
+                await ctx.followup.send("Invalid quality or size.")
         else:
             await ctx.followup.send("You are not authorized for GPT commands")
 
