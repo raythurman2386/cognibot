@@ -1,4 +1,3 @@
-import os
 import discord
 from dotenv import load_dotenv
 from db.database import add_user_to_table, init_db, is_user_in_table
