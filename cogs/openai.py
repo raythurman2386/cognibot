@@ -38,6 +38,7 @@ class Openai(commands.Cog):
                 try:
                     image_url = img_generation(prompt, quality, size)
                     saved_image = await upload_image(image_url)
+                    print(saved_image.secure_url)
                     await deploy_gallery()
                 except Exception as e:
                     handle_error(e)

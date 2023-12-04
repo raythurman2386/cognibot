@@ -65,10 +65,10 @@ def ask_gpt(question):
         return handle_error(e)
 
 
-def upload_image(image_url):
+async def upload_image(image_url):
     folder_name = env_vars["cloudinary_folder"]
     try:
-        response = cloudinary.uploader.upload(image_url, folder=folder_name)
+        response = await cloudinary.uploader.upload(image_url, folder=folder_name)
         app_logger.info("Image uploaded successfully")
         deploy_gallery()
         return response
