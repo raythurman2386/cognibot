@@ -1,14 +1,14 @@
-import os
 import discord
 from dotenv import load_dotenv
 from db.database import add_user_to_table, init_db, is_user_in_table
 from utils.logger import app_logger
+from utils.env import env_vars
 
 
 load_dotenv()
 bot = discord.Bot(intents=discord.Intents.all())
-owner_id = os.environ.get("OWNER_ID")
-token = os.environ.get("DISCORD_TOKEN")
+owner_id = env_vars["owner_id"]
+token = env_vars["token"]
 
 
 cogs_list = ["greetings", "moderation", "openai", "anthropic"]
