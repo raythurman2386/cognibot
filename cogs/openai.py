@@ -47,9 +47,14 @@ class Openai(commands.Cog):
                         description=prompt,
                         color=ctx.author.top_role.color,
                     )
-                    embed.set_image(url=image_url)
-                    await ctx.followup.send("Generation Complete!")
-                    await ctx.send(reference=ctx.message, embed=embed)
+                    try:
+                        embed.set_image(url=saved_image.url)
+                        await ctx.followup.send("Generation Complete!")
+                        await ctx.send(reference=ctx.message, embed=embed)
+                    except:
+                        embed.set_image(url=image_url)
+                        await ctx.followup.send("Generation Complete!")
+                        await ctx.send(reference=ctx.message, embed=embed)
             else:
                 await ctx.followup.send("Invalid quality or size.")
         else:
