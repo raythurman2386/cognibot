@@ -22,7 +22,7 @@ jobs:
         run: pip install pylint
 
       - name: Lint code
-        run: pylint your_module_or_package_name
+        run: pylint ./main.py
 
       - name: Check for changes
         id: check_changes
