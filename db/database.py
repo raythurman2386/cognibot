@@ -1,10 +1,12 @@
 import sqlite3
 from contextlib import contextmanager
+from utils.logger import app_logger
 
 
 @contextmanager
 def db_session():
     conn = sqlite3.connect("chat_log.db")
+    app_logger.info("Database connected successfully!")
     c = conn.cursor()
     try:
         yield c

@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from utils.logger import app_logger
 
 
 async def get_user_id(ctx: commands.Context, username: str) -> str:
@@ -41,7 +42,9 @@ class CustomError(Exception):
 
 def handle_error(e):
     if isinstance(e, CustomError):
+        app_logger.warning(f"There has been an error: {e}")
         return str(e)
     else:
         # Log the error or handle it as needed
+        app_logger.error(f"There has been an error: {e}")
         return "Blimey! Something went wrong: " + str(e)
