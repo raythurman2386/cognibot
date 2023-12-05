@@ -65,8 +65,32 @@ def ask_gpt(question):
         return handle_error(e)
     
 
-def ask_vision():
-    pass
+def ask_vision(image):
+    try:
+        if len(image) == 0:
+            raise CustomError("Please provide a question for ChatGPT!")
+        
+        # Insert the user's message into the database
+        add_message("user", image)
+        app_logger.info("User message added to database")
+
+        # Retrieve the chat log from the database
+        chat_log = get_chat_log()
+
+        response = client.chat.completions.create(
+            model="gpt-4-vision-preview", messages=chat_log, temperature=0.1
+        )
+        answer = response.choices[0].message.content
+        app_logger.info("GPT Response successful")
+
+        # Insert the bot's response into the database
+        add_message("assistant", answer)
+        app_logger.info("Assistant message added to database")
+
+        return answer
+    except Exception as e:
+        app_logger.error("GPT generation encountered an error: {e}")
+        return handle_error(e)
 
 
 def upload_image(image_url):

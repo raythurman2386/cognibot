@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from db.database import is_user_in_table
 
-from utils.openai import ask_gpt, deploy_gallery, img_generation, upload_image
+from utils.openai import ask_gpt, deploy_gallery, img_generation, upload_image, ask_vision
 from utils.utils import handle_error, send_large_message
 
 
@@ -20,6 +20,18 @@ class Openai(commands.Cog):
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "authorized_users"):
             answer = ask_gpt(prompt)
+            await send_large_message(ctx, answer)
+        else:
+            await ctx.followup.send("You are not authorized for GPT commands")
+            
+    @discord.slash_command(
+        name="vision",
+        description="Send a prompt to ChatGPT's Vision Endpoint",
+    )
+    async def gpt_vision(self, ctx, image):
+        await ctx.defer(ephemeral=True)
+        if is_user_in_table(str(ctx.author.id), "authorized_users"):
+            answer = ask_vision(image)
             await send_large_message(ctx, answer)
         else:
             await ctx.followup.send("You are not authorized for GPT commands")
