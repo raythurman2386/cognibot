@@ -63,7 +63,7 @@ def ask_gpt(question):
     except Exception as e:
         app_logger.error("GPT generation encountered an error: {e}")
         return handle_error(e)
-    
+
 
 def ask_vision():
     pass
@@ -78,7 +78,7 @@ def upload_image(image_url):
         return response
     except Exception as e:
         app_logger.error(f"Failed to upload image: {e}")
-        raise
+        return handle_error(e)
 
 
 def deploy_gallery():
@@ -94,4 +94,4 @@ def deploy_gallery():
             )
     except Exception as e:
         app_logger.error(f"Failed to trigger deploy: {e}")
-        raise
+        return handle_error(e)
