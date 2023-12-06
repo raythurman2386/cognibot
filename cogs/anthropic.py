@@ -16,11 +16,14 @@ class Anthropic(commands.Cog):
     )
     async def claude(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
-        if is_user_in_table(str(ctx.author.id), "authorized_users"):
-            answer = ask_claude(prompt)
-            await send_large_message(ctx, answer)
-        else:
-            await ctx.followup.send("You are not authorized for GPT commands")
+        try:
+            if is_user_in_table(str(ctx.author.id), "authorized_users"):
+                answer = ask_claude(prompt)
+                await send_large_message(ctx, answer)
+            else:
+                await ctx.followup.send("You are not authorized for GPT commands")
+        except:
+            await ctx.followup.send("Software Goblin fucked something up!")
 
 
 def setup(bot):
