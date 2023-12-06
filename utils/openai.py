@@ -63,7 +63,7 @@ def ask_gpt(question):
     except Exception as e:
         app_logger.error("GPT generation encountered an error: {e}")
         return handle_error(e)
-    
+
 
 def ask_vision():
     pass
