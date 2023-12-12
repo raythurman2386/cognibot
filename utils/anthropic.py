@@ -24,7 +24,7 @@ def ask_claude(question):
 
         response = anthropic.completions.create(
             model=env_vars["claude_model"],
-            max_tokens_to_sample=300,
+            max_tokens_to_sample=2048,
             temperature=0.1,
             # messages=chat_log,
             prompt=f"You are Claude, a helpful pair programming bot who provides useful suggestions and explanations to programmers.{HUMAN_PROMPT}{question}{AI_PROMPT}",
