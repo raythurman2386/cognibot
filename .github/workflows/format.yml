@@ -25,15 +25,3 @@ jobs:
 
       - name: Format code
         run: black .
-
-      - name: Check for changes
-        id: check_changes
-        run: git diff --exit-code
-
-      - name: Commit and push changes
-        if: steps.check_changes.outputs.exit_code == 1
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git commit -am "Format code with Black"
-          git push
