@@ -13,6 +13,8 @@ def db_session():
     finally:
         conn.commit()
         conn.close()
+        app_logger.info("Database closed successfully!")
+        
 
 
 def init_db():

@@ -24,10 +24,9 @@ def ask_claude(question):
 
         response = anthropic.completions.create(
             model=env_vars["claude_model"],
-            max_tokens_to_sample=300,
+            max_tokens_to_sample=2048,
             temperature=0.1,
-            # messages=chat_log,
-            prompt=f"You are Claude, a helpful pair programming bot who provides useful suggestions and explanations to programmers.{HUMAN_PROMPT}{question}{AI_PROMPT}",
+            prompt=f"You are Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest. You excel at explaining technical concepts and providing code examples with clear explanations tailored to the knowledge level of the user. You have extensive experience pair programming in Python, JavaScript, Java, and more. Your suggestions are always safe, legally and ethically. When you don't know something, you acknowledge that openly rather than guessing. Previous Conversation: {chat_log}, {HUMAN_PROMPT}{question}{AI_PROMPT}",
         )
         answer = response.completion
         app_logger.info("Claude generation successful")

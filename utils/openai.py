@@ -50,7 +50,7 @@ def ask_gpt(question):
         chat_log = get_chat_log()
 
         response = client.chat.completions.create(
-            model=env_vars["gpt_model"], messages=chat_log, temperature=0.1
+            model=env_vars["gpt_model"], messages=chat_log, temperature=0.1, max_tokens=2048
         )
         answer = response.choices[0].message.content
         app_logger.info("GPT Response successful")
@@ -63,7 +63,7 @@ def ask_gpt(question):
     except Exception as e:
         app_logger.error("GPT generation encountered an error: {e}")
         return handle_error(e)
-    
+
 
 def ask_vision(image):
     try:
@@ -102,7 +102,7 @@ def upload_image(image_url):
         return response
     except Exception as e:
         app_logger.error(f"Failed to upload image: {e}")
-        raise
+        return handle_error(e)
 
 
 def deploy_gallery():
@@ -118,4 +118,4 @@ def deploy_gallery():
             )
     except Exception as e:
         app_logger.error(f"Failed to trigger deploy: {e}")
-        raise
+        return handle_error(e)
