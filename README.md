@@ -7,14 +7,15 @@ Embark on a journey of intelligent conversations with CogniBot, a Discord compan
 ### Greetings Commands
 
 - `/hello`: Simply says hello to test the bot.
-- `/goodbye`: Simply says goodbye to test the bot.
-- `/greet`: Greets a user from the message author.
-- `on_user_join`: Greets a user when they join the server.
 
 ### OpenAI Commands
 
 - `/chatgpt`: Send a prompt to chat gpt for a private dismissable response.
-- `/dalle`: Send a prompt to chat gpt to generate a dall e 3 ai image. The response is private and dismissable.
+- `/dalle`: Send a prompt to chat gpt to generate a dall e 3 ai image. The response is a discord embed and the image will only be valid for 1 hour. If you fail to download your image in the proper amount of time, all images are hosted at [Ravenwood AI Gallery](https://ravenwood-gallery.vercel.app)
+
+### Anthropic Commands
+
+- `/claude`: Send a prompt to Anthropics Claude for a private dismissable response, conversational bot.
 
 ### Moderator Commands
 
