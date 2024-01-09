@@ -1,19 +1,24 @@
-import sqlite3
+import psycopg2
 from contextlib import contextmanager
 from utils.logger import app_logger
 
 
-@contextmanager
+@contextmanager  
 def db_session():
-    conn = sqlite3.connect("chat_log.db")
-    app_logger.info("Database connected successfully!")
-    c = conn.cursor()
-    try:
-        yield c
+    conn = psycopg2.connect(dbname="cognibot", user="postgres", password="admin")
+    cursor = conn.cursor()
+    app_logger.info(f"PGDatabase Connected Successfully")
+    try: 
+        yield cursor
+    except:
+        conn.rollback() 
+        raise
     finally:
-        conn.commit()
-        conn.close()
-        app_logger.info("Database closed successfully!")
+        try:
+            cursor.close() 
+            conn.close()
+        except Exception:
+            pass
         
 
 
@@ -22,22 +27,25 @@ def init_db():
         c.execute(
             """
             CREATE TABLE IF NOT EXISTS chat_log (
-                id INTEGER PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 role TEXT,
                 content TEXT
             )
         """
         )
         # Check if the system entry already exists
-        system_entry_exists = c.execute(
-            "SELECT COUNT(*) FROM chat_log WHERE role = 'system'"
-        ).fetchone()[0]
+        # Execute query 
+        c.execute("SELECT COUNT(*) FROM chat_log WHERE role = 'system'")
+
+        # Fetch one result 
+        system_entry_exists = c.fetchone()[0]
 
         # If it doesn't exist, insert the default system entry
         if not system_entry_exists:
             c.execute(
-                "INSERT INTO chat_log (role, content) VALUES (?, ?)",
+                "INSERT INTO chat_log (id, role, content) VALUES (%s, %s, %s)",
                 (
+                    1,
                     "system",
                     "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of humor.",
                 ),
@@ -46,7 +54,7 @@ def init_db():
         c.execute(
             """
             CREATE TABLE IF NOT EXISTS authorized_users (
-                id INTEGER PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 user_id TEXT
             )
         """
@@ -54,48 +62,48 @@ def init_db():
         c.execute(
             """
             CREATE TABLE IF NOT EXISTS moderators (
-                id INTEGER PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 user_id TEXT
             )
         """
         )
+        c.execute("COMMIT")
 
 
 def get_user_from_table(user_id, table_name):
     with db_session() as c:
-        c.execute(f"SELECT * FROM {table_name} WHERE user_id = ?", (user_id,))
+        c.execute(f"SELECT * FROM {table_name} WHERE user_id = {user_id}")
         user = c.fetchone()
     return user
 
 
 def add_user_to_table(user_id, table_name):
     with db_session() as c:
-        c.execute(f"INSERT INTO {table_name} (user_id) VALUES (?)", (user_id,))
+        c.execute(f"INSERT INTO {table_name} (user_id) VALUES ({user_id})")
 
 
 def update_user_in_table(user_id, table_name, column_name, new_value):
     with db_session() as c:
         c.execute(
-            f"UPDATE {table_name} SET {column_name} = ? WHERE user_id = ?",
-            (new_value, user_id),
+            f"UPDATE {table_name} SET {column_name} = {new_value} WHERE user_id = {user_id}"
         )
 
 
 def remove_user_from_table(user_id, table_name):
     with db_session() as c:
-        c.execute(f"DELETE FROM {table_name} WHERE user_id=?", (user_id,))
+        c.execute(f"DELETE FROM {table_name} WHERE user_id={user_id}")
 
 
 def is_user_in_table(user_id, table_name):
     with db_session() as c:
-        c.execute(f"SELECT * FROM {table_name} WHERE user_id=?", (user_id,))
+        c.execute(f"SELECT * FROM {table_name} WHERE user_id='{str(user_id)}'") 
         result = c.fetchone()
     return result is not None
 
 
 def get_user_from_table(user_id, table_name):
     with db_session() as c:
-        c.execute(f"SELECT * FROM {table_name} WHERE user_id = ?", (user_id,))
+        c.execute(f"SELECT * FROM {table_name} WHERE user_id = '{str(user_id)}'")
         user = c.fetchone()
     return user
 
@@ -121,7 +129,7 @@ def clear_table(table_name):
 
 def add_message(role, content):
     with db_session() as c:
-        c.execute("INSERT INTO chat_log (role, content) VALUES (?, ?)", (role, content))
+        c.execute("INSERT INTO chat_log (role, content) VALUES (%s, %s)", (role, content))
 
 
 def get_chat_log():
