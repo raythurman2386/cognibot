@@ -17,4 +17,8 @@ env_vars = {
     "anthropic_key": os.environ.get("ANTHROPIC_API_KEY"),
     "owner_id": os.environ.get("OWNER_ID"),
     "token": os.environ.get("DISCORD_TOKEN"),
+    "db_name": os.environ.get("DB_NAME"),
+    "db_user": os.environ.get("DB_USER"),
+    "db_pass": os.environ.get("DB_PASS"),
+    "db_url": os.environ.get("DATABASE_URL")
 }

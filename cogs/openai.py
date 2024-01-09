@@ -34,7 +34,11 @@ class Openai(commands.Cog):
     )
     async def dall_e(self, ctx, prompt, quality="standard", size="standard"):
         allowed_qualities = {"standard", "hd"}
-        allowed_sizes = {"standard": "1024x1024", "wide": "1792x1024", "tall": "1024x1792"}
+        allowed_sizes = {
+            "standard": "1024x1024",
+            "wide": "1792x1024",
+            "tall": "1024x1792",
+        }
         await ctx.defer(ephemeral=True)
         try:
             if is_user_in_table(str(ctx.author.id), "authorized_users"):
