@@ -25,7 +25,7 @@ class Moderation(commands.Cog):
                 await ctx.followup.send(f"{member} already authorized")
         else:
             await ctx.followup.send("You are not authorized for moderation commands")
-            
+
     @discord.slash_command(
         name="nogptforu",
         description="Remove access for user to use chat gpt",
