@@ -6,11 +6,14 @@ from utils.env import env_vars
 
 @contextmanager
 def db_session():
-    conn = psycopg2.connect(
-        dbname=env_vars["db_name"],
-        user=env_vars["db_user"],
-        password=env_vars["db_pass"],
-    )
+    if env_vars["db_url"]:
+        conn = psycopg2.connect(env_vars['db_url'])
+    else:
+        conn = psycopg2.connect(
+            dbname=env_vars["db_name"],
+            user=env_vars["db_user"],
+            password=env_vars["db_pass"],
+        )
     cursor = conn.cursor()
     app_logger.info(f"PGDatabase Connected Successfully")
     try:
