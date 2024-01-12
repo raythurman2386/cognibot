@@ -32,19 +32,22 @@ class Openai(commands.Cog):
         description="Send a prompt to Dall E 3",
         help="Send a prompt and an optional quality(standard or hd) and an optional size(1024x1024 | 1024x1792 | 1792x1024) for image generation. Will default to standard quality and a square image if parameters aren't included.",
     )
-    async def dall_e(self, ctx, prompt, quality="standard", size="standard"):
+    async def dall_e(self, ctx, prompt, quality="standard", size="standard", style="vivid"):
         allowed_qualities = {"standard", "hd"}
         allowed_sizes = {
             "standard": "1024x1024",
             "wide": "1792x1024",
             "tall": "1024x1792",
         }
+        allowed_styles ={
+            "natural", "vivid"
+        }
         await ctx.defer(ephemeral=True)
         try:
             if is_user_in_table(str(ctx.author.id), "authorized_users"):
-                if quality in allowed_qualities and size in allowed_sizes:
+                if quality in allowed_qualities and size in allowed_sizes and style in allowed_styles:
                     try:
-                        image_url = img_generation(prompt, quality, allowed_sizes[size])
+                        image_url = img_generation(prompt, quality, allowed_sizes[size], style)
                     except Exception as e:
                         handle_error(e)
                     finally:
