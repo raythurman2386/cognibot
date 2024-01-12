@@ -31,7 +31,12 @@ def img_generation(prompt, quality, size):
 
         img_url = response.data[0].url
         app_logger.info("Image Successfully Generated")
-        return img_url
+        # Download image from DALL-E URL
+        img_data = requests.get(img_url).content
+        app_logger.info("Image Successfully Downloaded")
+
+        upload_result = upload_image(image_bytes=img_data)
+        return upload_result["secure_url"]
     except Exception as e:
         app_logger.error(f"Image Generation Failed: {e}")
         return handle_error(e)
@@ -72,10 +77,10 @@ def ask_vision():
     pass
 
 
-def upload_image(image_url):
+def upload_image(image_bytes):
     folder_name = env_vars["cloudinary_folder"]
     try:
-        response = cloudinary.uploader.upload(image_url, folder=folder_name)
+        response = cloudinary.uploader.upload(image_bytes, folder=folder_name)
         app_logger.info("Image uploaded successfully")
         deploy_gallery()
         return response

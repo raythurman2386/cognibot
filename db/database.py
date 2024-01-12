@@ -7,7 +7,7 @@ from utils.env import env_vars
 @contextmanager
 def db_session():
     if env_vars["db_url"]:
-        conn = psycopg2.connect(env_vars['db_url'])
+        conn = psycopg2.connect(env_vars["db_url"])
     else:
         conn = psycopg2.connect(
             dbname=env_vars["db_name"],
