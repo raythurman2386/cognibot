@@ -45,8 +45,6 @@ class Openai(commands.Cog):
                 if quality in allowed_qualities and size in allowed_sizes:
                     try:
                         image_url = img_generation(prompt, quality, allowed_sizes[size])
-                        saved_image = await upload_image(image_url)
-                        await deploy_gallery()
                     except Exception as e:
                         handle_error(e)
                     finally:
@@ -55,14 +53,9 @@ class Openai(commands.Cog):
                             description=prompt,
                             color=ctx.author.top_role.color,
                         )
-                        try:
-                            embed.set_image(url=saved_image.url)
-                            await ctx.followup.send("Generation Complete!")
-                            await ctx.send(reference=ctx.message, embed=embed)
-                        except:
-                            embed.set_image(url=image_url)
-                            await ctx.followup.send("Generation Complete!")
-                            await ctx.send(reference=ctx.message, embed=embed)
+                        embed.set_image(url=image_url)
+                        await ctx.followup.send("Generation Complete!")
+                        await ctx.send(reference=ctx.message, embed=embed)
                 else:
                     await ctx.followup.send("Invalid quality or size.")
             else:

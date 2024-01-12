@@ -20,5 +20,5 @@ env_vars = {
     "db_name": os.environ.get("DB_NAME"),
     "db_user": os.environ.get("DB_USER"),
     "db_pass": os.environ.get("DB_PASS"),
-    "db_url": os.environ.get("DATABASE_URL")
+    "db_url": os.environ.get("DATABASE_URL"),
 }
