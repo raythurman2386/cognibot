@@ -26,7 +26,7 @@ def img_generation(prompt, quality, size, style):
             prompt=prompt,
             size=size,
             quality=quality,
-            style=style
+            style=style,
             n=1,
         )
 
