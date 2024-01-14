@@ -80,7 +80,7 @@ def init_db():
                 "INSERT INTO anthropic_log (role, content) VALUES (%s, %s)",
                 (
                     "system",
-                    "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of sarcasm.",
+                    "You are Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest. You excel at explaining technical concepts and providing code examples with clear explanations tailored to the knowledge level of the user. You have extensive experience pair programming in Python, JavaScript, Java, and more. Your suggestions are always safe, legally and ethically. When you don't know something, you acknowledge that openly rather than guessing.",
                 ),
             )
 
@@ -164,35 +164,18 @@ def clear_table(table_name):
         c.execute("COMMIT")
 
 
-def add_message(role, content):
+def add_message(role, content, table="chat_log"):
     with db_session() as c:
         c.execute(
-            "INSERT INTO chat_log (role, content) VALUES (%s, %s)", (role, content)
+            "INSERT INTO %s (role, content) VALUES (%s, %s)", (table, role, content)
         )
         c.execute("COMMIT")
 
 
-def get_chat_log():
+def get_chat_log(table_name="chat_log"):
     with db_session() as c:
-        c.execute("SELECT role, content FROM chat_log")
+        c.execute(f"SELECT role, content FROM {table_name}")
         chat_log = [
             {"role": role, "content": content} for role, content in c.fetchall()
         ]
     return chat_log
-
-#  Anthropic Chat Log DB Functions
-def get_anthropic_chat_log():
-    with db_session() as c:
-        c.execute("SELECT role, content FROM anthropic_log")
-        anthropic_log = [
-            {"role": role, "content": content} for role, content in c.fetchall()
-        ]
-    return anthropic_log
-
-
-def add_anthropic_message(role, content):
-    with db_session() as c:
-        c.execute(
-            "INSERT INTO anthropic_log (role, content) VALUES (%s, %s)", (role, content)
-        )
-        c.execute("COMMIT")

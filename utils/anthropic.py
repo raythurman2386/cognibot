@@ -1,5 +1,5 @@
 from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
-from db.database import add_anthropic_message, get_anthropic_chat_log
+from db.database import add_anthropic_message, add_message, get_anthropic_chat_log, get_chat_log
 from utils.logger import app_logger
 from utils.utils import CustomError, handle_error
 from utils.env import env_vars
@@ -17,10 +17,10 @@ def ask_claude(question):
             raise CustomError("Please provide a question for Claude!")
 
         # Insert the user's message into the database
-        add_anthropic_message("user", question)
+        add_message("user", question, table="anthropic_log")
         app_logger.info("User message added to database")
         # Retrieve the chat log from the database
-        chat_log = get_anthropic_chat_log()
+        chat_log = get_chat_log(table_name="anthropic_log")
 
         response = anthropic.completions.create(
             model=env_vars["claude_model"],
@@ -32,7 +32,7 @@ def ask_claude(question):
         answer = response.completion
         app_logger.info("Claude generation successful")
         # Insert the bot's response into the database
-        add_anthropic_message("assistant", answer)
+        add_message("assistant", answer, table="anthropic_log")
         app_logger.info("Assistant message added to database")
 
         return answer
