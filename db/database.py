@@ -150,9 +150,8 @@ def clear_table(table_name):
 
 def add_message(role, content, table="chat_log"):
     with db_session() as c:
-        c.execute(
-            "INSERT INTO %s (role, content) VALUES (%s, %s)", (table, role, content)
-        )
+        query = "INSERT INTO {} (role, content) VALUES (%s, %s)".format(table)
+        c.execute(query, (role, content))
         c.execute("COMMIT")
 
 
