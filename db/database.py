@@ -56,7 +56,7 @@ def init_db():
                     "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of humor.",
                 ),
             )
-            
+
         #  Create Anthropic Chat Log
         c.execute(
             """
@@ -67,22 +67,6 @@ def init_db():
             )
         """
         )
-        # Check if the anthropic system entry already exists
-        # Execute query
-        c.execute("SELECT COUNT(*) FROM anthropic_log WHERE role = 'system'")
-
-        # Fetch one result
-        anthropic_system_entry_exists = c.fetchone()[0]
-
-        # If it doesn't exist, insert the default system entry
-        if not anthropic_system_entry_exists:
-            c.execute(
-                "INSERT INTO anthropic_log (role, content) VALUES (%s, %s)",
-                (
-                    "system",
-                    "You are Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest. You excel at explaining technical concepts and providing code examples with clear explanations tailored to the knowledge level of the user. You have extensive experience pair programming in Python, JavaScript, Java, and more. Your suggestions are always safe, legally and ethically. When you don't know something, you acknowledge that openly rather than guessing.",
-                ),
-            )
 
         c.execute(
             """
