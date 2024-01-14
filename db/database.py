@@ -56,6 +56,33 @@ def init_db():
                     "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of humor.",
                 ),
             )
+            
+        #  Create Anthropic Chat Log
+        c.execute(
+            """
+            CREATE TABLE IF NOT EXISTS anthropic_log (
+                id SERIAL PRIMARY KEY,
+                role TEXT,
+                content TEXT
+            )
+        """
+        )
+        # Check if the anthropic system entry already exists
+        # Execute query
+        c.execute("SELECT COUNT(*) FROM anthropic_log WHERE role = 'system'")
+
+        # Fetch one result
+        anthropic_system_entry_exists = c.fetchone()[0]
+
+        # If it doesn't exist, insert the default system entry
+        if not anthropic_system_entry_exists:
+            c.execute(
+                "INSERT INTO anthropic_log (role, content) VALUES (%s, %s)",
+                (
+                    "system",
+                    "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of sarcasm.",
+                ),
+            )
 
         c.execute(
             """
@@ -152,3 +179,20 @@ def get_chat_log():
             {"role": role, "content": content} for role, content in c.fetchall()
         ]
     return chat_log
+
+#  Anthropic Chat Log DB Functions
+def get_anthropic_chat_log():
+    with db_session() as c:
+        c.execute("SELECT role, content FROM anthropic_log")
+        anthropic_log = [
+            {"role": role, "content": content} for role, content in c.fetchall()
+        ]
+    return anthropic_log
+
+
+def add_anthropic_message(role, content):
+    with db_session() as c:
+        c.execute(
+            "INSERT INTO anthropic_log (role, content) VALUES (%s, %s)", (role, content)
+        )
+        c.execute("COMMIT")
