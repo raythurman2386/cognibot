@@ -18,6 +18,7 @@ def db_session():
             conn.commit()
             conn.close()
             app_logger.info("Database closed successfully!")
+
     elif DB_TYPE == "postgres":
         import psycopg2
 
