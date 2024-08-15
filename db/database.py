@@ -8,41 +8,15 @@ DB_TYPE = env_vars["db_type"]
 
 @contextmanager
 def db_session():
-    if DB_TYPE == "sqlite":
-        conn = sqlite3.connect("chat_log.db")
-        app_logger.info("SQDatabase connected successfully!")
-        c = conn.cursor()
-        try:
-            yield c
-        finally:
-            conn.commit()
-            conn.close()
-            app_logger.info("Database closed successfully!")
-
-    elif DB_TYPE == "postgres":
-        import psycopg2
-
-        if env_vars["db_url"]:
-            conn = psycopg2.connect(env_vars["db_url"])
-        else:
-            conn = psycopg2.connect(
-                dbname=env_vars["db_name"],
-                user=env_vars["db_user"],
-                password=env_vars["db_pass"],
-            )
-        cursor = conn.cursor()
-        app_logger.info(f"PGDatabase Connected Successfully")
-        try:
-            yield cursor
-        except:
-            conn.rollback()
-            raise
-        finally:
-            try:
-                cursor.close()
-                conn.close()
-            except Exception:
-                pass
+    conn = sqlite3.connect("chat_log.db")
+    app_logger.info("SQDatabase connected successfully!")
+    c = conn.cursor()
+    try:
+        yield c
+    finally:
+        conn.commit()
+        conn.close()
+        app_logger.info("Database closed successfully!")
 
 
 def init_db():
