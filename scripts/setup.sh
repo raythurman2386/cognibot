@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Navigate to the bot's directory
-cd /cognibot
-
 # Check if Python is installed
 if ! command -v python3 &> /dev/null
 then
@@ -31,4 +28,4 @@ fi
 echo "Setup complete. Virtual environment created and dependencies installed."
 
 # Optional: Add a note about how to run the bot
-echo "To run the bot, activate the virtual environment using 'source venv/bin/activate' and run 'python bot.py'."
+echo "To run the bot, activate the virtual environment using 'source venv/bin/activate' and run 'python main.py'."
