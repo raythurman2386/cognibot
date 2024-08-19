@@ -6,7 +6,7 @@ VENV_DIR="/cognibot/venv"
 # Check if the virtual environment exists
 if [ ! -d "$VENV_DIR" ]; then
     echo "Virtual environment not found. Running setup script..."
-    bash /cognibot/setup.sh
+    bash /cognibot/scripts/setup.sh
 fi
 
 # Activate the virtual environment
