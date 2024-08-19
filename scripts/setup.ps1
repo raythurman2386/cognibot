@@ -1,6 +1,3 @@
-# Navigate to the bot directory
-cd "C:\Documents\Dev\cognibot"
-
 # Check if Python is installed
 if (-not (Get-Command python3 -ErrorAction SilentlyContinue)) {
     Write-Host "Python3 could not be found. Please install Python3 and try again."
