@@ -13,4 +13,4 @@ git pull origin main
 git stash pop
 
 # Restart the bot
-sudo systemctl restart cognibot
+sudo systemctl restart cognibot.service
