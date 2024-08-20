@@ -11,7 +11,7 @@ owner_id = env_vars["owner_id"]
 token = env_vars["token"]
 
 
-cogs_list = ["greetings", "moderation", "openai"]
+cogs_list = ["greetings", "moderation", "openai", "fun"]
 for cog in cogs_list:
     bot.load_extension(f"cogs.{cog}")
 
