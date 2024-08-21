@@ -58,7 +58,6 @@ class Moderation(commands.Cog):
         else:
             await ctx.followup.send("You are not authorized for moderation commands")
 
-    # Backup Database
     @discord.slash_command(
         name="backup",
         description="A moderator is able to backup the chat log to the server.",
