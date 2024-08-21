@@ -1,3 +1,4 @@
+import os
 import atexit
 import logging
 import signal
@@ -23,12 +24,18 @@ class AsyncRotatingFileHandler(RotatingFileHandler):
         self.executor.shutdown(wait=True)
         super().close()
 
+# Create the "Logs" directory if it doesn't exist
+logs_dir = "Logs"
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
+
 app_logger = logging.getLogger("CogniBotLogger")
 app_logger.setLevel(logging.INFO)
 
 try:
+    log_file = os.path.join(logs_dir, "cognibot.log")
     handler = AsyncRotatingFileHandler(
-        "cognibot.log", maxBytes=1024 * 1024, backupCount=3
+        log_file, maxBytes=1024 * 1024, backupCount=3
     )
 
     formatter = logging.Formatter(

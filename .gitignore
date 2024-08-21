@@ -124,3 +124,5 @@ build/
 
 .idea/
 .vscode/
+logs/
+Logs/
