@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the path to your virtual environment
-VENV_DIR="/cognibot/venv"
+VENV_DIR="/venv"
 
 # Check if the virtual environment exists
 if [ ! -d "$VENV_DIR" ]; then

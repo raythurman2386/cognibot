@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Navigate to the bot directory
-cd /cognibot
-
 # Stash any local changes
 git stash
 
