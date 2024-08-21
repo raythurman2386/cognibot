@@ -2,7 +2,10 @@ import os
 import shutil
 import time
 
-def backup_database(db_path="db/chat_log.db", backup_folder="Backups", max_size_mb=1024):
+
+def backup_database(
+    db_path="db/chat_log.db", backup_folder="Backups", max_size_mb=1024
+):
     if not os.path.exists(backup_folder):
         os.makedirs(backup_folder)
 

@@ -3,6 +3,7 @@ import random
 from discord.ext import commands
 from utils.logger import app_logger
 
+
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -13,9 +14,13 @@ class Fun(commands.Cog):
     )
     async def roll_dice(self, ctx, dice: str):
         try:
-            if not dice.startswith('d') or not dice[1:].isdigit():
-                await ctx.respond("❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20).")
-                app_logger.warn("❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20).")
+            if not dice.startswith("d") or not dice[1:].isdigit():
+                await ctx.respond(
+                    "❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20)."
+                )
+                app_logger.warn(
+                    "❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20)."
+                )
                 return
 
             sides = int(dice[1:])
@@ -45,6 +50,7 @@ class Fun(commands.Cog):
         except Exception as e:
             await ctx.respond("❌ An error occurred. Please try again later.")
             app_logger.error(f"Error in flip_coin: {e}")
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

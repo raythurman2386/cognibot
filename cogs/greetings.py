@@ -38,4 +38,4 @@ We hope you enjoy your time here! Don't hesitate to introduce yourself in #intro
 
 
 def setup(bot):
-    bot.add_cog(Greetings(bot)) 
+    bot.add_cog(Greetings(bot))
