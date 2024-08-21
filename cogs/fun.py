@@ -13,20 +13,17 @@ class Fun(commands.Cog):
     )
     async def roll_dice(self, ctx, dice: str):
         try:
-            # Validate dice format
             if not dice.startswith('d') or not dice[1:].isdigit():
                 await ctx.respond("❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20).")
                 app_logger.warn("❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20).")
                 return
 
-            # Extract the number of sides
             sides = int(dice[1:])
             if sides <= 0:
                 await ctx.respond("❌ The number of sides must be a positive integer.")
                 app_logger.warn("❌ The number of sides must be a positive integer.")
                 return
 
-            # Roll the dice
             result = random.randint(1, sides)
             await ctx.respond(f"🎲 You rolled a {dice} and got a {result}!")
             app_logger.info(f"🎲 You rolled a {dice} and got a {result}!")

@@ -5,8 +5,6 @@ import cloudinary.uploader
 import requests
 from utils.logger import app_logger
 from utils.env import env_vars
-
-# Configure logging
 from utils.utils import CustomError, handle_error
 
 
@@ -48,11 +46,9 @@ def ask_gpt(question):
         if len(question) == 0:
             raise CustomError("Please provide a question for ChatGPT!")
 
-        # Insert the user's message into the database
         add_message("user", question)
         app_logger.info("User message added to database")
 
-        # Retrieve the chat log from the database
         chat_log = get_chat_log()
 
         response = client.chat.completions.create(
@@ -64,7 +60,6 @@ def ask_gpt(question):
         answer = response.choices[0].message.content
         app_logger.info("GPT Response successful")
 
-        # Insert the bot's response into the database
         add_message("assistant", answer)
         app_logger.info("Assistant message added to database")
 

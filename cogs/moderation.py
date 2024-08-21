@@ -70,13 +70,13 @@ class Moderation(commands.Cog):
         await ctx.defer(ephemeral=True)
         if is_user_in_table(str(ctx.author.id), "moderators"):
             base_dir = os.getcwd()
-            db_path = f"{base_dir}/chat_log.db"
-            backup_folder = f"{base_dir}/backups/"
+            db_path = f"{base_dir}/db/chat_log.db"
+            backup_folder = f"{base_dir}/Backups/"
             backup_database(db_path, backup_folder)
             await ctx.followup.send("Database successfully backed up!")
         else:
             await ctx.followup.send("You are not authorized for moderation commands")
 
 
-def setup(bot):  # this is called by Pycord to setup the cog
-    bot.add_cog(Moderation(bot))  # add the cog to the bot
+def setup(bot):
+    bot.add_cog(Moderation(bot))

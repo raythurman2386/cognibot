@@ -21,13 +21,10 @@ async def format_response(response):
 
 async def send_large_message(ctx: commands.Context, response: str):
     try:
-        # Split the response into chunks of 2000 characters each
         chunks = [response[i : i + 2000] for i in range(0, len(response), 2000)]
 
-        # Defer the interaction if it hasn't been deferred
         if not ctx.response.is_done():
             await ctx.defer(ephemeral=True)
-        # Send each chunk as a separate message
         for chunk in chunks:
             await ctx.followup.send(chunk, ephemeral=True)
     except discord.errors.HTTPException:
@@ -45,6 +42,5 @@ def handle_error(e):
         app_logger.warning(f"There has been an error: {e}")
         return str(e)
     else:
-        # Log the error or handle it as needed
         app_logger.error(f"There has been an error: {e}")
         return "Blimey! Something went wrong: " + str(e)

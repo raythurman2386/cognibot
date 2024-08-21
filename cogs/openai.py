@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from db.database import is_user_in_table
 
-from utils.openai import ask_gpt, deploy_gallery, img_generation, upload_image
+from utils.openai import ask_gpt, img_generation
 from utils.utils import handle_error, send_large_message
 
 

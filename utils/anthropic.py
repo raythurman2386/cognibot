@@ -16,10 +16,8 @@ def ask_claude(question):
         if len(question) == 0:
             raise CustomError("Please provide a question for Claude!")
 
-        # Insert the user's message into the database
         add_message("user", question)
         app_logger.info("User message added to database")
-        # Retrieve the chat log from the database
         chat_log = get_chat_log()
 
         response = anthropic.completions.create(
@@ -30,7 +28,6 @@ def ask_claude(question):
         )
         answer = response.completion
         app_logger.info("Claude generation successful")
-        # Insert the bot's response into the database
         add_message("assistant", answer)
         app_logger.info("Assistant message added to database")
 

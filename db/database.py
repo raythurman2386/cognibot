@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from contextlib import contextmanager
 from utils.logger import app_logger
@@ -8,7 +9,10 @@ DB_TYPE = env_vars["db_type"]
 
 @contextmanager
 def db_session():
-    conn = sqlite3.connect("chat_log.db")
+    db_dir = "db"
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+    conn = sqlite3.connect(f"{db_dir}/chat_log.db")
     app_logger.info("SQDatabase connected successfully!")
     c = conn.cursor()
     try:
@@ -30,12 +34,10 @@ def init_db():
             )
         """
         )
-        # Check if the system entry already exists
         system_entry_exists = c.execute(
             "SELECT COUNT(*) FROM chat_log WHERE role = 'system'"
         ).fetchone()[0]
 
-        # If it doesn't exist, insert the default system entry
         if not system_entry_exists:
             c.execute(
                 "INSERT INTO chat_log (role, content) VALUES (?, ?)",
