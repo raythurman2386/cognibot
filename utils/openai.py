@@ -37,7 +37,7 @@ def img_generation(prompt, quality, size, style):
         upload_result = upload_image(image_bytes=img_data)
         return upload_result["secure_url"]
     except Exception as e:
-        app_logger.error(f"Image Generation Failed: {e}")
+        app_logger.error(f"❌ Image Generation Failed: {e}")
         return handle_error(e)
 
 
@@ -65,7 +65,7 @@ def ask_gpt(question):
 
         return answer
     except Exception as e:
-        app_logger.error("GPT generation encountered an error: {e}")
+        app_logger.error("❌ GPT generation encountered an error: {e}")
         return handle_error(e)
 
 
@@ -81,7 +81,7 @@ def upload_image(image_bytes):
         deploy_gallery()
         return response
     except Exception as e:
-        app_logger.error(f"Failed to upload image: {e}")
+        app_logger.error(f"❌ Failed to upload image: {e}")
         return handle_error(e)
 
 
@@ -94,8 +94,8 @@ def deploy_gallery():
             app_logger.info("Deploy triggered successfully")
         else:
             app_logger.warning(
-                f"Failed to trigger deploy. Status code: {response.status_code}"
+                f"❌ Failed to trigger deploy. Status code: {response.status_code}"
             )
     except Exception as e:
-        app_logger.error(f"Failed to trigger deploy: {e}")
+        app_logger.error(f"❌ Failed to trigger deploy: {e}")
         return handle_error(e)

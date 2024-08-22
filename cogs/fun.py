@@ -37,7 +37,7 @@ class Fun(commands.Cog):
 
         except Exception as e:
             await ctx.respond("❌ An error occurred. Please try again later.")
-            app_logger.error(f"Error in roll_dice: {e}")
+            app_logger.error(f"❌ Error in roll_dice: {e}")
 
     @discord.slash_command(
         name="flip_coin",
@@ -50,7 +50,7 @@ class Fun(commands.Cog):
 
         except Exception as e:
             await ctx.respond("❌ An error occurred. Please try again later.")
-            app_logger.error(f"Error in flip_coin: {e}")
+            app_logger.error(f"❌ Error in flip_coin: {e}")
 
 
 def setup(bot):

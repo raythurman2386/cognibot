@@ -23,7 +23,7 @@ class Anthropic(commands.Cog):
             else:
                 await ctx.followup.send("You are not authorized for GPT commands")
         except:
-            await ctx.followup.send("Software Goblin fucked something up!")
+            await ctx.followup.send("❌ An error occurred. Please try again later.")
 
 
 def setup(bot):

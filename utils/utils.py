@@ -39,8 +39,8 @@ class CustomError(Exception):
 
 def handle_error(e):
     if isinstance(e, CustomError):
-        app_logger.warning(f"There has been an error: {e}")
+        app_logger.warning(f"❌ An error occurred. Please try again later. {e}")
         return str(e)
     else:
-        app_logger.error(f"There has been an error: {e}")
-        return "Blimey! Something went wrong: " + str(e)
+        app_logger.error(f"❌ An error occurred. Please try again later. {e}")
+        return "❌ An error occurred. Please try again later." + str(e)

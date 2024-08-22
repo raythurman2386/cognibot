@@ -33,5 +33,5 @@ def ask_claude(question):
 
         return answer
     except Exception as e:
-        app_logger.error(f"Claude generation encountered an error: {e}")
+        app_logger.error(f"❌ Claude generation encountered an error: {e}")
         return handle_error(e)

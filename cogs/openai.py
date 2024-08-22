@@ -14,7 +14,7 @@ class Openai(commands.Cog):
 
     @discord.slash_command(
         name="chatgpt",
-        description="Send a prompt to ChatGPT",
+        description="Ask ChatGPT a question.",
     )
     async def chat_gpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
@@ -25,11 +25,11 @@ class Openai(commands.Cog):
             else:
                 await ctx.followup.send("You are not authorized for GPT commands")
         except:
-            await ctx.followup.send("Software Goblin fucked something up!")
+            await ctx.followup.send("❌ An error occurred. Please try again later.")
 
     @discord.slash_command(
         name="dalle",
-        description="Send a prompt to Dall E 3",
+        description="Send a prompt to Dall E 3 for a custom image generation of your own.",
         help="Send a prompt and an optional quality(standard or hd) and an optional size(1024x1024 | 1024x1792 | 1792x1024) for image generation. Will default to standard quality and a square image if parameters aren't included.",
     )
     async def dall_e(
@@ -70,7 +70,7 @@ class Openai(commands.Cog):
             else:
                 await ctx.followup.send("You are not authorized for GPT commands")
         except:
-            await ctx.followup.send("Software Goblin fucked something up!")
+            await ctx.followup.send("❌ An error occurred. Please try again later.")
 
 
 def setup(bot):
