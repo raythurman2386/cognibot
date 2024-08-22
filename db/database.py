@@ -12,7 +12,7 @@ def db_session():
     db_dir = "db"
     if not os.path.exists(db_dir):
         os.makedirs(db_dir)
-    conn = sqlite3.connect(f"{db_dir}/chat_log.db")
+    conn = sqlite3.connect(f"{db_dir}/chat_log.sqlite")
     app_logger.info("SQDatabase connected successfully!")
     c = conn.cursor()
     try:
