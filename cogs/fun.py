@@ -14,7 +14,8 @@ class Fun(commands.Cog):
     )
     async def roll_dice(self, ctx, dice: str):
         try:
-            if not dice.startswith("d") or not dice[1:].isdigit().lower():
+            dice = dice.lower()
+            if not dice.startswith("d") or not dice[1:].isdigit():
                 await ctx.respond(
                     "❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20)."
                 )
