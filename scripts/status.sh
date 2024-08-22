@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Check if the bot is running
-if ! pgrep -f "python3 /cognibot/main.py" > /dev/null
+if sudo systemctl is-active --quiet cognibot.service
 then
+    echo "Bot is running."
+else
     echo "Bot is not running. Restarting..."
     sudo systemctl restart cognibot.service
-else
-    echo "Bot is running."
 fi
