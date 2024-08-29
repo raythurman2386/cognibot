@@ -1,10 +1,15 @@
 #!/bin/bash
 
-# Stash any local changes
+EXPECTED_DIR="cognibot"
+CURRENT_DIR=${PWD##*/}
+
+if [ "$CURRENT_DIR" != "$EXPECTED_DIR" ]; then
+    echo "Not in the $EXPECTED_DIR directory. Changing directory..."
+    cd ./cognibot
+fi
+
 git stash
 
-# Pull the latest changes
 git pull origin main
 
-# Restart the bot
 sudo systemctl restart cognibot.service
