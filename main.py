@@ -9,7 +9,7 @@ load_dotenv()
 owner_id = env_vars["owner_id"]
 token = env_vars["token"]
 
-class MyBot(discord.Bot):
+class Cognibot(discord.Bot):
     async def on_ready(self):
         app_logger.info(f"{self.user} is ready and online!")
         print(f"{self.user} is ready and online!")
@@ -28,7 +28,7 @@ class MyBot(discord.Bot):
     async def on_resumed(self):
         app_logger.info("Bot session resumed")
 
-bot = MyBot(intents=discord.Intents.all())
+bot = Cognibot(intents=discord.Intents.all())
 
 cogs_list = ["greetings", "moderation", "openai", "fun", "anthropic"]
 for cog in cogs_list:
