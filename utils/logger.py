@@ -27,7 +27,14 @@ class AsyncRotatingFileHandler(RotatingFileHandler):
 
 
 class Logger:
-    def __init__(self, name: str, log_dir: str = "Logs", log_file: str = "cognibot.log", max_bytes: int = 1024 * 1024, backup_count: int = 3):
+    def __init__(
+        self,
+        name: str,
+        log_dir: str = "Logs",
+        log_file: str = "cognibot.log",
+        max_bytes: int = 1024 * 1024,
+        backup_count: int = 3,
+    ):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.INFO)
 
@@ -37,7 +44,9 @@ class Logger:
 
         # Set up the rotating file handler
         log_path = os.path.join(log_dir, log_file)
-        handler = AsyncRotatingFileHandler(log_path, maxBytes=max_bytes, backupCount=backup_count)
+        handler = AsyncRotatingFileHandler(
+            log_path, maxBytes=max_bytes, backupCount=backup_count
+        )
 
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -46,7 +55,7 @@ class Logger:
         self.logger.addHandler(handler)
 
         atexit.register(self.shutdown_logging)
-        
+
     def setup_signal_handlers(self):
         signal.signal(signal.SIGTERM, self.handle_exit_signal)
         signal.signal(signal.SIGINT, self.handle_exit_signal)
