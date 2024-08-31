@@ -49,14 +49,6 @@ def init_db():
 
         c.execute(
             """
-            CREATE TABLE IF NOT EXISTS authorized_users (
-                id INTEGER PRIMARY KEY,
-                user_id TEXT
-            )
-        """
-        )
-        c.execute(
-            """
             CREATE TABLE IF NOT EXISTS moderators (
                 id INTEGER PRIMARY KEY,
                 user_id TEXT

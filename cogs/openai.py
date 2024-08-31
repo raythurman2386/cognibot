@@ -1,7 +1,6 @@
 import os
 import discord
 from discord.ext import commands
-from db.database import is_user_in_table
 
 from utils.openai import ask_gpt, img_generation
 from utils.utils import handle_error, send_large_message
@@ -19,11 +18,8 @@ class Openai(commands.Cog):
     async def chat_gpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
         try:
-            if is_user_in_table(str(ctx.author.id), "authorized_users"):
-                answer = ask_gpt(prompt)
-                await send_large_message(ctx, answer)
-            else:
-                await ctx.followup.send("You are not authorized for GPT commands")
+            answer = ask_gpt(prompt)
+            await send_large_message(ctx, answer)
         except:
             await ctx.followup.send("❌ An error occurred. Please try again later.")
 
@@ -44,31 +40,28 @@ class Openai(commands.Cog):
         allowed_styles = {"natural", "vivid"}
         await ctx.defer(ephemeral=True)
         try:
-            if is_user_in_table(str(ctx.author.id), "authorized_users"):
-                if (
-                    quality in allowed_qualities
-                    and size in allowed_sizes
-                    and style in allowed_styles
-                ):
-                    try:
-                        image_url = img_generation(
-                            prompt, quality, allowed_sizes[size], style
-                        )
-                    except Exception as e:
-                        handle_error(e)
-                    finally:
-                        embed = discord.Embed(
-                            title="AI Image",
-                            description=prompt,
-                            color=ctx.author.top_role.color,
-                        )
-                        embed.set_image(url=image_url)
-                        await ctx.followup.send("Generation Complete!")
-                        await ctx.send(reference=ctx.message, embed=embed)
-                else:
-                    await ctx.followup.send("Invalid quality or size.")
+            if (
+                quality in allowed_qualities
+                and size in allowed_sizes
+                and style in allowed_styles
+            ):
+                try:
+                    image_url = img_generation(
+                        prompt, quality, allowed_sizes[size], style
+                    )
+                except Exception as e:
+                    handle_error(e)
+                finally:
+                    embed = discord.Embed(
+                        title="AI Image",
+                        description=prompt,
+                        color=ctx.author.top_role.color,
+                    )
+                    embed.set_image(url=image_url)
+                    await ctx.followup.send("Generation Complete!")
+                    await ctx.send(reference=ctx.message, embed=embed)
             else:
-                await ctx.followup.send("You are not authorized for GPT commands")
+                await ctx.followup.send("Invalid quality or size.")
         except:
             await ctx.followup.send("❌ An error occurred. Please try again later.")
 
