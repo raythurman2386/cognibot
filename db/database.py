@@ -89,13 +89,6 @@ def is_user_in_table(user_id, table_name):
     return result is not None
 
 
-def get_user_from_table(user_id, table_name):
-    with db_session() as c:
-        c.execute(f"SELECT * FROM {table_name} WHERE user_id = ?", (user_id,))
-        user = c.fetchone()
-    return user
-
-
 def get_all_users_from_table(table_name):
     with db_session() as c:
         c.execute(f"SELECT * FROM {table_name}")

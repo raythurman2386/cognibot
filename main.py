@@ -1,5 +1,5 @@
-import discord
 import asyncio
+import discord
 from dotenv import load_dotenv
 from db.database import add_user_to_table, init_db, is_user_in_table
 from utils.logger import app_logger
@@ -46,7 +46,7 @@ async def main():
     except discord.HTTPException as e:
         app_logger.error(f"HTTP request failed: {e}")
     except Exception as e:
-        app_logger.exception("An unexpected error occurred")
+        app_logger.exception(f"An unexpected error occurred: {e}")
     finally:
         if not bot.is_closed():
             await bot.close()
