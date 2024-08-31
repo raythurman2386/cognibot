@@ -3,6 +3,7 @@ import sqlite3
 from contextlib import contextmanager
 from utils.logger import app_logger
 
+
 @contextmanager
 def db_session():
     db_dir = "db"
