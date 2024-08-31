@@ -4,9 +4,7 @@ import time
 
 
 def backup_database(
-        db_path="db/chat_log.sqlite",
-        backup_folder="Backups",
-        max_size_mb=1024
+    db_path="db/chat_log.sqlite", backup_folder="Backups", max_size_mb=1024
 ):
     from utils.logger import app_logger
 
@@ -15,7 +13,9 @@ def backup_database(
 
     db_size = os.path.getsize(db_path) / (1024 * 1024)
     if db_size > max_size_mb:
-        app_logger.warning(f"Database size ({db_size:.2f}MB) is over the limit of {max_size_mb}MB.")
+        app_logger.warning(
+            f"Database size ({db_size:.2f}MB) is over the limit of {max_size_mb}MB."
+        )
 
     app_logger.info(f"Database size is currently {db_size:.2f}MB.")
 
