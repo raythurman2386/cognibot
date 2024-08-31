@@ -53,6 +53,7 @@ def test_init_db(test_db):
         c.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = c.fetchall()
     assert ("chat_log",) in tables
+    assert ("authorized_users",) in tables
     assert ("moderators",) in tables
 
 
