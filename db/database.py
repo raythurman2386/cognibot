@@ -2,10 +2,6 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from utils.logger import app_logger
-from utils.env import env_vars
-
-DB_TYPE = env_vars["db_type"]
-
 
 @contextmanager
 def db_session():
@@ -46,15 +42,6 @@ def init_db():
                     "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of humor.",
                 ),
             )
-
-        c.execute(
-            """
-            CREATE TABLE IF NOT EXISTS authorized_users (
-                id INTEGER PRIMARY KEY,
-                user_id TEXT
-            )
-        """
-        )
         c.execute(
             """
             CREATE TABLE IF NOT EXISTS moderators (
