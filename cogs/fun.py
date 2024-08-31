@@ -19,7 +19,7 @@ class Fun(commands.Cog):
                 await ctx.respond(
                     "❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20)."
                 )
-                app_logger.warn(
+                app_logger.warning(
                     "❌ Invalid dice format. Use the format 'dN', where N is a number (e.g., d6, d20)."
                 )
                 return
@@ -27,7 +27,7 @@ class Fun(commands.Cog):
             sides = int(dice[1:])
             if sides <= 0:
                 await ctx.respond("❌ The number of sides must be a positive integer.")
-                app_logger.warn("❌ The number of sides must be a positive integer.")
+                app_logger.warning("❌ The number of sides must be a positive integer.")
                 return
 
             result = random.randint(1, sides)

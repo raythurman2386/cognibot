@@ -2,10 +2,6 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from utils.logger import app_logger
-from utils.env import env_vars
-
-DB_TYPE = env_vars["db_type"]
-
 
 @contextmanager
 def db_session():
@@ -46,15 +42,6 @@ def init_db():
                     "You are a helpful, Discord bot. Respond with markdown as accurately as possible to the commands, with just a sprinkle of humor.",
                 ),
             )
-
-        c.execute(
-            """
-            CREATE TABLE IF NOT EXISTS authorized_users (
-                id INTEGER PRIMARY KEY,
-                user_id TEXT
-            )
-        """
-        )
         c.execute(
             """
             CREATE TABLE IF NOT EXISTS moderators (
@@ -95,13 +82,6 @@ def is_user_in_table(user_id, table_name):
         c.execute(f"SELECT * FROM {table_name} WHERE user_id=?", (user_id,))
         result = c.fetchone()
     return result is not None
-
-
-def get_user_from_table(user_id, table_name):
-    with db_session() as c:
-        c.execute(f"SELECT * FROM {table_name} WHERE user_id = ?", (user_id,))
-        user = c.fetchone()
-    return user
 
 
 def get_all_users_from_table(table_name):

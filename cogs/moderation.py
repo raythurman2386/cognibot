@@ -2,45 +2,13 @@ import os
 import discord
 from discord.ext import commands
 from db.backup import backup_database
-from db.database import add_user_to_table, is_user_in_table, remove_user_from_table
+from db.database import add_user_to_table, is_user_in_table
 
 
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
-
-    @discord.slash_command(
-        name="auth",
-        description="Authorize user to use chat gpt",
-    )
-    async def auth(self, ctx, member: discord.Member):
-        await ctx.defer(ephemeral=True)
-        if is_user_in_table(str(ctx.author.id), "moderators"):
-            user_id = str(member.id)
-            if not is_user_in_table(user_id, "authorized_users"):
-                add_user_to_table(user_id, "authorized_users")
-                await ctx.followup.send(f"{member} added to authorized users")
-            else:
-                await ctx.followup.send(f"{member} already authorized")
-        else:
-            await ctx.followup.send("You are not authorized for moderation commands")
-
-    @discord.slash_command(
-        name="nogptforu",
-        description="Remove access for user to use chat gpt",
-    )
-    async def remove_access(self, ctx, member: discord.Member):
-        await ctx.defer(ephemeral=True)
-        if is_user_in_table(str(ctx.author.id), "moderators"):
-            user_id = str(member.id)
-            if is_user_in_table(user_id, "authorized_users"):
-                remove_user_from_table(user_id, "authorized_users")
-                await ctx.followup.send(f"{member} removed from authorized users!")
-            else:
-                await ctx.followup.send(f"{member} already not authorized!")
-        else:
-            await ctx.followup.send("You are not authorized for moderation commands")
 
     @discord.slash_command(
         name="addmod",
