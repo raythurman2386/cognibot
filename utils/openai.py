@@ -1,4 +1,3 @@
-from db.database import add_message, get_chat_log
 from openai import OpenAI
 import cloudinary
 import cloudinary.uploader
@@ -41,15 +40,15 @@ def img_generation(prompt, quality, size, style):
         return handle_error(e)
 
 
-def ask_gpt(question):
+def ask_gpt(user_id, question, db):
     try:
         if len(question) == 0:
             raise CustomError("Please provide a question for ChatGPT!")
 
-        add_message("user", question)
-        app_logger.info("User message added to database")
+        db.add_message(user_id, "user", question)
+        app_logger.info(f"User message added to database for user {user_id}")
 
-        chat_log = get_chat_log()
+        chat_log = db.get_chat_log(user_id)
 
         response = client.chat.completions.create(
             model=env_vars["gpt_model"],
@@ -58,14 +57,16 @@ def ask_gpt(question):
             max_tokens=2048,
         )
         answer = response.choices[0].message.content
-        app_logger.info("GPT Response successful")
+        app_logger.info(f"Claude generation successful for user {user_id}")
 
-        add_message("assistant", answer)
-        app_logger.info("Assistant message added to database")
+        db.add_message(user_id, "assistant", answer)
+        app_logger.info(f"Assistant message added to database for user {user_id}")
 
         return answer
     except Exception as e:
-        app_logger.error("❌ GPT generation encountered an error: {e}")
+        app_logger.error(
+            f"❌ GPT generation encountered an error for user {user_id}: {e}"
+        )
         return handle_error(e)
 
 

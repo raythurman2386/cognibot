@@ -1,7 +1,7 @@
 import asyncio
 import discord
 from dotenv import load_dotenv
-from db.database import add_user_to_table, init_db, is_user_in_table
+from db.database import ChatDatabase
 from utils.logger import app_logger
 from utils.env import env_vars
 
@@ -11,14 +11,13 @@ token = env_vars["token"]
 
 
 class Cognibot(discord.Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.db = ChatDatabase()
+
     async def on_ready(self):
         app_logger.info(f"{self.user} is ready and online!")
-        print(f"{self.user} is ready and online!")
-        init_db()
-        owner_id_str = str(owner_id)
-        for table in ["moderators"]:
-            if not is_user_in_table(owner_id_str, table):
-                add_user_to_table(owner_id_str, table)
+        self.db.init_db()
 
     async def on_disconnect(self):
         app_logger.warning("Bot disconnected from Discord")
@@ -32,7 +31,7 @@ class Cognibot(discord.Bot):
 
 bot = Cognibot(intents=discord.Intents.all())
 
-cogs_list = ["greetings", "moderation", "openai", "fun", "anthropic"]
+cogs_list = ["greetings", "openai", "fun", "anthropic"]
 for cog in cogs_list:
     bot.load_extension(f"cogs.{cog}")
 
