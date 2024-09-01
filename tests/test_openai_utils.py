@@ -1,3 +1,4 @@
+import os
 import pytest
 from unittest.mock import patch, MagicMock
 from utils.openai import img_generation, ask_gpt, upload_image, deploy_gallery
@@ -22,6 +23,7 @@ def mock_cloudinary():
 def mock_db():
     return MagicMock()
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_img_generation_success(mock_openai_client, mock_requests, mock_cloudinary):
     mock_openai_client.images.generate.return_value.data = [MagicMock(url='http://fake-image-url')]
     mock_requests.get.return_value.content = b'fake image content'
@@ -34,6 +36,7 @@ def test_img_generation_success(mock_openai_client, mock_requests, mock_cloudina
     mock_requests.get.assert_called_once_with('http://fake-image-url')
     mock_cloudinary.upload.assert_called_once()
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_img_generation_failure(mock_openai_client):
     mock_openai_client.images.generate.side_effect = Exception('API Error')
 
@@ -41,6 +44,7 @@ def test_img_generation_failure(mock_openai_client):
 
     assert "An error occurred" in result
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_ask_gpt_success(mock_openai_client, mock_db):
     mock_db.get_chat_log.return_value = [{'role': 'user', 'content': 'Hello'}]
     mock_openai_client.chat.completions.create.return_value.choices = [
@@ -53,6 +57,7 @@ def test_ask_gpt_success(mock_openai_client, mock_db):
     mock_db.add_message.assert_called()
     mock_openai_client.chat.completions.create.assert_called_once()
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_ask_gpt_failure(mock_openai_client, mock_db):
     mock_openai_client.chat.completions.create.side_effect = Exception('API Error')
 
@@ -60,6 +65,7 @@ def test_ask_gpt_failure(mock_openai_client, mock_db):
 
     assert "An error occurred" in result
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_upload_image_success(mock_cloudinary):
     mock_cloudinary.upload.return_value = {'secure_url': 'http://uploaded-image-url'}
 
@@ -68,6 +74,7 @@ def test_upload_image_success(mock_cloudinary):
     assert result == {'secure_url': 'http://uploaded-image-url'}
     mock_cloudinary.upload.assert_called_once()
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_upload_image_failure(mock_cloudinary):
     mock_cloudinary.upload.side_effect = Exception('Upload Error')
 
@@ -75,6 +82,7 @@ def test_upload_image_failure(mock_cloudinary):
 
     assert "An error occurred" in result
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_deploy_gallery_success(mock_requests):
     mock_requests.post.return_value.status_code = 201
 
@@ -82,6 +90,7 @@ def test_deploy_gallery_success(mock_requests):
 
     mock_requests.post.assert_called_once()
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 def test_deploy_gallery_failure(mock_requests):
     mock_requests.post.side_effect = Exception('Deploy Error')
 
