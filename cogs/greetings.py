@@ -37,5 +37,5 @@ We hope you enjoy your time here! Don't hesitate to introduce yourself in #intro
         )
 
 
-def setup(bot):  # this is called by Pycord to setup the cog
-    bot.add_cog(Greetings(bot))  # add the cog to the bot
+def setup(bot):
+    bot.add_cog(Greetings(bot))

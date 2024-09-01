@@ -1,9 +1,9 @@
 import os
 import discord
 from discord.ext import commands
-from db.database import is_user_in_table
+from db.database import ChatDatabase
 
-from utils.openai import ask_gpt, deploy_gallery, img_generation, upload_image
+from utils.openai import ask_gpt, img_generation
 from utils.utils import handle_error, send_large_message
 
 
@@ -11,25 +11,24 @@ class Openai(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
+        self.db = ChatDatabase()
 
     @discord.slash_command(
         name="chatgpt",
-        description="Send a prompt to ChatGPT",
+        description="Ask ChatGPT a question.",
     )
     async def chat_gpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
         try:
-            if is_user_in_table(str(ctx.author.id), "authorized_users"):
-                answer = ask_gpt(prompt)
-                await send_large_message(ctx, answer)
-            else:
-                await ctx.followup.send("You are not authorized for GPT commands")
+            user_id = str(ctx.author.id)
+            answer = ask_gpt(user_id, prompt, self.db)
+            await send_large_message(ctx, answer)
         except:
-            await ctx.followup.send("Software Goblin fucked something up!")
+            await ctx.followup.send("❌ An error occurred. Please try again later.")
 
     @discord.slash_command(
         name="dalle",
-        description="Send a prompt to Dall E 3",
+        description="Send a prompt to Dall E 3 for a custom image generation of your own.",
         help="Send a prompt and an optional quality(standard or hd) and an optional size(1024x1024 | 1024x1792 | 1792x1024) for image generation. Will default to standard quality and a square image if parameters aren't included.",
     )
     async def dall_e(
@@ -44,33 +43,30 @@ class Openai(commands.Cog):
         allowed_styles = {"natural", "vivid"}
         await ctx.defer(ephemeral=True)
         try:
-            if is_user_in_table(str(ctx.author.id), "authorized_users"):
-                if (
-                    quality in allowed_qualities
-                    and size in allowed_sizes
-                    and style in allowed_styles
-                ):
-                    try:
-                        image_url = img_generation(
-                            prompt, quality, allowed_sizes[size], style
-                        )
-                    except Exception as e:
-                        handle_error(e)
-                    finally:
-                        embed = discord.Embed(
-                            title="AI Image",
-                            description=prompt,
-                            color=ctx.author.top_role.color,
-                        )
-                        embed.set_image(url=image_url)
-                        await ctx.followup.send("Generation Complete!")
-                        await ctx.send(reference=ctx.message, embed=embed)
-                else:
-                    await ctx.followup.send("Invalid quality or size.")
+            if (
+                quality in allowed_qualities
+                and size in allowed_sizes
+                and style in allowed_styles
+            ):
+                try:
+                    image_url = img_generation(
+                        prompt, quality, allowed_sizes[size], style
+                    )
+                except Exception as e:
+                    handle_error(e)
+                finally:
+                    embed = discord.Embed(
+                        title="AI Image",
+                        description=prompt,
+                        color=ctx.author.top_role.color,
+                    )
+                    embed.set_image(url=image_url)
+                    await ctx.followup.send("Generation Complete!")
+                    await ctx.send(reference=ctx.message, embed=embed)
             else:
-                await ctx.followup.send("You are not authorized for GPT commands")
+                await ctx.followup.send("Invalid quality or size.")
         except:
-            await ctx.followup.send("Software Goblin fucked something up!")
+            await ctx.followup.send("❌ An error occurred. Please try again later.")
 
 
 def setup(bot):

@@ -1,3 +1,4 @@
+import os
 import atexit
 import logging
 import signal
@@ -9,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 class AsyncRotatingFileHandler(RotatingFileHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.executor = ThreadPoolExecutor(max_workers=1)
+        self.executor = ThreadPoolExecutor(max_workers=2)
 
     def emit(self, record):
         self.executor.submit(self._emit, record)
@@ -17,7 +18,7 @@ class AsyncRotatingFileHandler(RotatingFileHandler):
     def _emit(self, record):
         try:
             super().emit(record)
-        except Exception:
+        except (OSError, IOError) as e:
             self.handleError(record)
 
     def close(self):
@@ -25,46 +26,54 @@ class AsyncRotatingFileHandler(RotatingFileHandler):
         super().close()
 
 
-# Set up a specific logger with our desired output level
-app_logger = logging.getLogger("CogniBotLogger")
-app_logger.setLevel(logging.INFO)
+class Logger:
+    def __init__(
+        self,
+        name: str,
+        log_dir: str = "Logs",
+        log_file: str = "cognibot.log",
+        max_bytes: int = 1024 * 1024,
+        backup_count: int = 3,
+    ):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.INFO)
 
-try:
-    # Add the log message handler to the logger
-    handler = AsyncRotatingFileHandler(
-        "cognibot.log", maxBytes=1024 * 1024, backupCount=3  # 1 MB
-    )
+        # Create log directory if it doesn't exist
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
-    # Create a formatter and set it for the handler
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
-    handler.setFormatter(formatter)
+        # Set up the rotating file handler
+        log_path = os.path.join(log_dir, log_file)
+        handler = AsyncRotatingFileHandler(
+            log_path, maxBytes=max_bytes, backupCount=backup_count
+        )
 
-    # Add the handler to the logger
-    app_logger.addHandler(handler)
-except Exception as e:
-    print(f"Failed to set up logger: {e}")
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+
+        atexit.register(self.shutdown_logging)
+
+    def setup_signal_handlers(self):
+        signal.signal(signal.SIGTERM, self.handle_exit_signal)
+        signal.signal(signal.SIGINT, self.handle_exit_signal)
+
+    def shutdown_logging(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
+
+    def handle_exit_signal(self, signum, frame):
+        self.shutdown_logging()
+        sys.exit(0)
+
+    def get_logger(self):
+        return self.logger
 
 
-# Function to close all handlers
-def shutdown_logging():
-    handlers = app_logger.handlers[:]
-    for handler in handlers:
-        handler.close()
-        app_logger.removeHandler(handler)
-
-
-# Register the shutdown function with atexit
-atexit.register(shutdown_logging)
-
-
-# Signal handling
-def handle_exit_signal(signum, frame):
-    shutdown_logging()
-    # Perform other shutdown tasks here
-    sys.exit(0)
-
-
-signal.signal(signal.SIGTERM, handle_exit_signal)
-signal.signal(signal.SIGINT, handle_exit_signal)
+logger = Logger("CogniBotLogger")
+app_logger = logger.get_logger()
+logger.setup_signal_handlers()

@@ -43,7 +43,7 @@ coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
-
+.pytest_cache/
 # Translations
 *.mo
 *.pot
@@ -121,3 +121,10 @@ cython_debug/
 # PyInstaller
 dist/
 build/
+
+.idea/
+.vscode/
+logs/
+Logs/
+Backups/
+*.sqlite

@@ -1,12 +1,9 @@
-from db.database import add_message, get_chat_log
 from openai import OpenAI
 import cloudinary
 import cloudinary.uploader
 import requests
 from utils.logger import app_logger
 from utils.env import env_vars
-
-# Configure logging
 from utils.utils import CustomError, handle_error
 
 
@@ -39,21 +36,19 @@ def img_generation(prompt, quality, size, style):
         upload_result = upload_image(image_bytes=img_data)
         return upload_result["secure_url"]
     except Exception as e:
-        app_logger.error(f"Image Generation Failed: {e}")
+        app_logger.error(f"❌ Image Generation Failed: {e}")
         return handle_error(e)
 
 
-def ask_gpt(question):
+def ask_gpt(user_id, question, db):
     try:
         if len(question) == 0:
             raise CustomError("Please provide a question for ChatGPT!")
 
-        # Insert the user's message into the database
-        add_message("user", question)
-        app_logger.info("User message added to database")
+        db.add_message(user_id, "user", question)
+        app_logger.info(f"User message added to database for user {user_id}")
 
-        # Retrieve the chat log from the database
-        chat_log = get_chat_log()
+        chat_log = db.get_chat_log(user_id)
 
         response = client.chat.completions.create(
             model=env_vars["gpt_model"],
@@ -62,15 +57,16 @@ def ask_gpt(question):
             max_tokens=2048,
         )
         answer = response.choices[0].message.content
-        app_logger.info("GPT Response successful")
+        app_logger.info(f"ChatGPT generation successful for user {user_id}")
 
-        # Insert the bot's response into the database
-        add_message("assistant", answer)
-        app_logger.info("Assistant message added to database")
+        db.add_message(user_id, "assistant", answer)
+        app_logger.info(f"ChatGPT message added to database for user {user_id}")
 
         return answer
     except Exception as e:
-        app_logger.error("GPT generation encountered an error: {e}")
+        app_logger.error(
+            f"❌ GPT generation encountered an error for user {user_id}: {e}"
+        )
         return handle_error(e)
 
 
@@ -86,7 +82,7 @@ def upload_image(image_bytes):
         deploy_gallery()
         return response
     except Exception as e:
-        app_logger.error(f"Failed to upload image: {e}")
+        app_logger.error(f"❌ Failed to upload image: {e}")
         return handle_error(e)
 
 
@@ -99,8 +95,8 @@ def deploy_gallery():
             app_logger.info("Deploy triggered successfully")
         else:
             app_logger.warning(
-                f"Failed to trigger deploy. Status code: {response.status_code}"
+                f"❌ Failed to trigger deploy. Status code: {response.status_code}"
             )
     except Exception as e:
-        app_logger.error(f"Failed to trigger deploy: {e}")
+        app_logger.error(f"❌ Failed to trigger deploy: {e}")
         return handle_error(e)
