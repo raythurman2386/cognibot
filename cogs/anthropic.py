@@ -12,7 +12,7 @@ class Anthropic(commands.Cog):
 
     @discord.slash_command(
         name="claude",
-        description="Send a prompt to Anthropic's Claude-2 API",
+        description="Send a prompt to Anthropic's Claude API",
     )
     async def claude(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
