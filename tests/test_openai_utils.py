@@ -4,6 +4,7 @@ from unittest.mock import patch, MagicMock
 from utils.openai import img_generation, ask_gpt, upload_image, deploy_gallery
 from utils.utils import CustomError
 
+@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 @pytest.fixture
 def mock_openai_client():
     with patch('utils.openai.client') as mock_client:
