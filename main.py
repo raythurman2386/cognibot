@@ -6,7 +6,6 @@ from utils.logger import app_logger
 from utils.env import env_vars
 
 load_dotenv()
-owner_id = env_vars["owner_id"]
 token = env_vars["token"]
 
 
