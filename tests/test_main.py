@@ -30,7 +30,6 @@ async def test_on_resumed(bot, caplog):
     await bot.on_resumed()
     assert "Bot session resumed" in caplog.text
 
-@pytest.mark.skipif(os.environ.get('CI') == 'true', reason="Test requires API key")
 @pytest.mark.asyncio
 async def test_main_successful():
     mock_bot = AsyncMock()
