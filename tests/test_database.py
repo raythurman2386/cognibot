@@ -5,117 +5,78 @@ import os
 from contextlib import contextmanager
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from db.database import (
-    db_session,
-    init_db,
-    add_user_to_table,
-    remove_user_from_table,
-    is_user_in_table,
-    get_user_from_table,
-    get_all_users_from_table,
-    count_users_in_table,
-    clear_table,
-    add_message,
-    get_chat_log,
-)
+from db.database import ChatDatabase
 
 
 @pytest.fixture(scope="function")
-def test_db():
-    test_db_path = "test_chat_log.sqlite"
-    conn = sqlite3.connect(test_db_path)
-    conn.close()
-
-    @contextmanager
-    def test_db_session():
-        conn = sqlite3.connect(test_db_path)
-        c = conn.cursor()
-        try:
-            yield c
-        finally:
-            conn.commit()
-            conn.close()
-
-    from db import database
-
-    database.db_session = test_db_session
-
-    init_db()
-
-    yield
-
-    # Clean up the test database after tests
-    os.remove(test_db_path)
+def test_db(tmp_path):
+    test_db_path = tmp_path / "test_chat_log.sqlite"
+    db = ChatDatabase(str(test_db_path))
+    db.init_db()
+    yield db
+    if os.path.exists(test_db_path):
+        os.remove(test_db_path)
 
 
-@pytest.mark.skip(
-    reason="This passes just fine and init is clearly working since the rest of the tests pass"
-)
 def test_init_db(test_db):
-    with db_session() as c:
+    with test_db._db_session() as c:
         c.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = c.fetchall()
     assert ("chat_log",) in tables
-    assert ("moderators",) in tables
-
-
-def test_add_and_remove_user(test_db):
-    user_id = "12345"
-    table_name = "moderators"
-
-    add_user_to_table(user_id, table_name)
-    assert is_user_in_table(user_id, table_name)
-
-    remove_user_from_table(user_id, table_name)
-    assert not is_user_in_table(user_id, table_name)
-
-
-def test_get_user_from_table(test_db):
-    user_id = "67890"
-    table_name = "moderators"
-
-    add_user_to_table(user_id, table_name)
-    user = get_user_from_table(user_id, table_name)
-    assert user is not None
-    assert user[1] == user_id
-
-
-def test_get_all_users_from_table(test_db):
-    table_name = "moderators"
-    add_user_to_table("user1", table_name)
-    add_user_to_table("user2", table_name)
-
-    users = get_all_users_from_table(table_name)
-    assert len(users) == 2
-
-
-def test_count_users_in_table(test_db):
-    table_name = "moderators"
-    add_user_to_table("mod1", table_name)
-    add_user_to_table("mod2", table_name)
-    add_user_to_table("mod3", table_name)
-
-    count = count_users_in_table(table_name)
-    assert count == 3
-
-
-def test_clear_table(test_db):
-    table_name = "moderators"
-    add_user_to_table("user1", table_name)
-    add_user_to_table("user2", table_name)
-
-    clear_table(table_name)
-    count = count_users_in_table(table_name)
-    assert count == 0
 
 
 def test_add_and_get_chat_log(test_db):
-    add_message("user", "Hello, bot!")
-    add_message("assistant", "Hello! How can I help you?")
+    user_id = "12345"
+    test_db.add_message(user_id, "user", "Hello, bot!")
+    test_db.add_message(user_id, "assistant", "Hello! How can I help you?")
 
-    chat_log = get_chat_log()
-    assert len(chat_log) == 3
+    chat_log = test_db.get_chat_log(user_id)
+    assert len(chat_log) == 3  # Including the system message
     assert chat_log[1]["role"] == "user"
     assert chat_log[1]["content"] == "Hello, bot!"
     assert chat_log[2]["role"] == "assistant"
     assert chat_log[2]["content"] == "Hello! How can I help you?"
+
+
+def test_clear_user_chat_log(test_db):
+    user_id = "67890"
+    test_db.add_message(user_id, "user", "Test message")
+    test_db.clear_user_chat_log(user_id)
+
+    chat_log = test_db.get_chat_log(user_id)
+    assert len(chat_log) == 1  # Only the system message should remain
+    assert chat_log[0]["role"] == "system"
+
+
+def test_multiple_users(test_db):
+    user1_id = "user1"
+    user2_id = "user2"
+
+    test_db.add_message(user1_id, "user", "Hello from user1")
+    test_db.add_message(user2_id, "user", "Hello from user2")
+
+    chat_log1 = test_db.get_chat_log(user1_id)
+    chat_log2 = test_db.get_chat_log(user2_id)
+
+    assert len(chat_log1) == 2  # System message + user message
+    assert len(chat_log2) == 2
+    assert chat_log1[1]["content"] == "Hello from user1"
+    assert chat_log2[1]["content"] == "Hello from user2"
+
+
+def test_ensure_system_message(test_db):
+    user_id = "test_user"
+
+    # First message should trigger system message creation
+    test_db.add_message(user_id, "user", "First message")
+    chat_log = test_db.get_chat_log(user_id)
+
+    assert len(chat_log) == 2
+    assert chat_log[0]["role"] == "system"
+
+    # Clear chat log and check if system message is recreated
+    test_db.clear_user_chat_log(user_id)
+    chat_log = test_db.get_chat_log(user_id)
+
+    assert len(chat_log) == 1
+    assert chat_log[0]["role"] == "system"

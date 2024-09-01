@@ -1,6 +1,7 @@
 import os
 import discord
 from discord.ext import commands
+from db.database import ChatDatabase
 
 from utils.openai import ask_gpt, img_generation
 from utils.utils import handle_error, send_large_message
@@ -10,6 +11,7 @@ class Openai(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.allowed_channel_id = os.environ.get("ALLOWED_CHANNEL_ID")
+        self.db = ChatDatabase()
 
     @discord.slash_command(
         name="chatgpt",
@@ -18,7 +20,8 @@ class Openai(commands.Cog):
     async def chat_gpt(self, ctx, prompt):
         await ctx.defer(ephemeral=True)
         try:
-            answer = ask_gpt(prompt)
+            user_id = str(ctx.author.id)
+            answer = ask_gpt(user_id, prompt, self.db)
             await send_large_message(ctx, answer)
         except:
             await ctx.followup.send("❌ An error occurred. Please try again later.")
