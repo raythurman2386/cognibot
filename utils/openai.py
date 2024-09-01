@@ -57,10 +57,10 @@ def ask_gpt(user_id, question, db):
             max_tokens=2048,
         )
         answer = response.choices[0].message.content
-        app_logger.info(f"Claude generation successful for user {user_id}")
+        app_logger.info(f"ChatGPT generation successful for user {user_id}")
 
         db.add_message(user_id, "assistant", answer)
-        app_logger.info(f"Assistant message added to database for user {user_id}")
+        app_logger.info(f"ChatGPT message added to database for user {user_id}")
 
         return answer
     except Exception as e:
