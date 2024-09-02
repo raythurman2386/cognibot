@@ -36,7 +36,9 @@ class Anthropic(commands.Cog):
         self.db.clear_user_chat_log(user_id)
         await ctx.respond("Your chat history has been cleared.", ephemeral=True)
 
-    @discord.slash_command(name="set_system_message", description="Set a custom system message for Claude")
+    @discord.slash_command(
+        name="set_system_message", description="Set a custom system message for Claude"
+    )
     async def set_system_message(self, ctx, *, message):
         self.system_message = message
         await ctx.respond("System message updated successfully.", ephemeral=True)
