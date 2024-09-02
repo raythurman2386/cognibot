@@ -1,6 +1,6 @@
 # CogniBot
 
-Embark on a journey of intelligent conversations with CogniBot, a Discord companion powered by advanced GPT technology. Crafted with precision using the robust Pycord framework, CogniBot seamlessly integrates into your server, bringing a new level of interactive engagement.
+**Embark on a journey of intelligent conversations with CogniBot, a Discord companion powered by advanced GPT technology.** Crafted with precision using the robust Pycord framework, CogniBot seamlessly integrates into your server, bringing a new level of interactive engagement.
 
 ## Getting Started
 
@@ -29,10 +29,10 @@ Setting up a virtual environment helps in managing dependencies and isolating th
 
 #### Automatic Setup (Recommended)
 
-To simplify the setup process for new developers, use the provided `setup.sh` script:
+To simplify the setup process for new developers, use the provided `setup.sh` script in the `scripts` directory:
 
 ```bash
-bash setup.sh
+bash scripts/setup.sh
 ```
 
 This script will:
@@ -114,7 +114,7 @@ deactivate
 To update the repository with the latest changes and restart the bot, use the provided `update_and_restart.sh` script:
 
 ```bash
-bash update_and_restart.sh
+bash scripts/update.sh
 ```
 
 This script will:
@@ -146,7 +146,19 @@ This script will:
 - `/backup`: A moderator may backup the chat log.
 
 ---
+### Contributing
 
+We welcome contributions to CogniBot! Here are the steps to contribute:
+
+- Join our Discord server: [CogniBot Discord](https://discord.gg/MxNVnrxJJw)
+- Fork the repository and create your branch from main.
+- Make your changes and ensure the code follows the project's style.
+- Test your changes thoroughly.
+- Create a pull request with a clear description of your changes.
+
+*For any ideas, bugs, or discussion items, please create an issue in the GitHub repository.*
+
+---
 ### Tips
 
 - Always ensure you are in the correct directory (`CogniBot`) before creating and activating the virtual environment.
