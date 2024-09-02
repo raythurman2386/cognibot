@@ -80,9 +80,7 @@ async def test_ask_claude_error(cog):
     cog.db.get_chat_log.side_effect = Exception("Database error")
 
     result = cog._ask_claude(user_id, question)
-    assert (
-        "An error occurred" in result
-    )
+    assert "An error occurred" in result
 
 
 @pytest.mark.asyncio
