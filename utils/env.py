@@ -19,6 +19,7 @@
     and hosting. They should not cause errors with local testing but if issues arise
     they can be requested or set up personally through Cloudinary.
 """
+
 import os
 from dotenv import load_dotenv
 
@@ -26,22 +27,21 @@ load_dotenv()
 
 env_vars = {
     # REQUIRED
-    "token": os.environ.get("DISCORD_TOKEN"), # Missing this token will result in a discord error
+    "token": os.environ.get(
+        "DISCORD_TOKEN"
+    ),  # Missing this token will result in a discord error
     "anthropic_key": os.environ.get("ANTHROPIC_API_KEY"),
     "openai_key": os.environ.get("OPENAI_API_KEY"),
-    
     # OPTIONAL
     "gpt_model": os.environ.get("GPT_MODEL") or "gpt-3.5-turbo",
     "image_model": os.environ.get("IMAGE_MODEL") or "dall-e-3",
     "claude_model": os.environ.get("CLAUDE_MODEL") or "claude-3-haiku-20240307",
-    
     # CLOUDINARY AND GALLERY DEPLOYMENT
     "cloud_name": os.environ.get("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME"),
     "cloudinary_api_key": os.environ.get("CLOUDINARY_API_KEY"),
     "cloudinary_api_secret": os.environ.get("CLOUDINARY_API_SECRET"),
     "cloudinary_folder": os.environ.get("CLOUDINARY_FOLDER"),
     "deploy_hook": os.environ.get("DEPLOY_HOOK"),
-    
     # DATABASE
     # DEPRECATED These are from a prior postgres database I was using when deployed with heroku
     # May still be useful in the future but not currently in use
