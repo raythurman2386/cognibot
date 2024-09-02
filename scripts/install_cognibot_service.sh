@@ -11,8 +11,8 @@ fi
 # Define variables
 SERVICE_NAME="cognibot"
 SERVICE_DESCRIPTION="Cognibot Discord Bot"
-WORKING_DIRECTORY="/path/to/cognibot"
-EXEC_START="/path/to/cognibot/venv/bin/python /path/to/cognibot/main.py"
+WORKING_DIRECTORY="/cognibot"
+EXEC_START="/cognibot/venv/bin/python /cognibot/main.py"
 USER="pi"  # or whatever user you want the service to run as
 
 # Create service file
