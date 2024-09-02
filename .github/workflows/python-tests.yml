@@ -27,6 +27,11 @@ jobs:
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Set up environment variables
+        run: echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> $GITHUB_ENV
+
       - name: Run tests
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           pytest --maxfail=5 --disable-warnings
