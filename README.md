@@ -111,7 +111,7 @@ deactivate
 
 ### Updating the Repository and Restarting the Bot
 
-To update the repository with the latest changes and restart the bot, use the provided `update_and_restart.sh` script:
+To update the repository with the latest changes and restart the bot, use the provided `update.sh` script in the `/scripts/` directory:
 
 ```bash
 bash scripts/update.sh
