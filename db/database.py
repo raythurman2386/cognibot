@@ -1,7 +1,6 @@
 import os
 import sqlite3
 from contextlib import contextmanager
-from utils.logger import app_logger
 
 
 class ChatDatabase:
@@ -20,18 +19,15 @@ class ChatDatabase:
     @contextmanager
     def _db_session(self):
         conn = sqlite3.connect(self.db_path)
-        app_logger.info("SQDatabase connected successfully!")
         c = conn.cursor()
         try:
             yield c
         finally:
             conn.commit()
             conn.close()
-            app_logger.info("Database closed successfully!")
 
     def init_db(self):
         with self._db_session() as c:
-            c.execute("DROP TABLE IF EXISTS chat_log")
             c.execute(
                 """
                 CREATE TABLE IF NOT EXISTS chat_log (
