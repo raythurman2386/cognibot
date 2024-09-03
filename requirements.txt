@@ -42,6 +42,7 @@ packaging==24.1
 pathspec==0.12.1
 platformdirs==4.2.2
 pluggy==1.5.0
+psutil==6.0.0
 py-cord==2.6.0
 pycord==0.1.1
 pycparser==2.22
