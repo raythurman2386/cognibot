@@ -1,4 +1,6 @@
 import logging
+from logging.handlers import RotatingFileHandler
+from unittest.mock import patch
 import pytest
 import sys
 import os
@@ -10,6 +12,11 @@ from utils.logger import app_logger, Logger, AsyncRotatingFileHandler
 # Define the path to the log file
 LOG_DIR = "Logs"
 LOG_FILE = os.path.join(LOG_DIR, "test_cognibot.log")
+
+
+class SyncRotatingFileHandler(RotatingFileHandler):
+    def emit(self, record):
+        super().emit(record)
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -67,22 +74,30 @@ def test_logger_initialization():
     assert isinstance(logger.get_logger().handlers[0], logging.Handler)
 
 
-@pytest.mark.skip(reason="Currently failing due to timing issues.")
-def test_log_file_creation():
-    # Test that logging creates the log file
-    app_logger.info("Testing log creation.")
-    wait_for_log_completion(app_logger)
-    wait_for_file_creation(LOG_FILE)
+@pytest.fixture
+def sync_logger():
+    with patch("utils.logger.AsyncRotatingFileHandler", SyncRotatingFileHandler):
+        yield Logger("TestLogger", log_dir="Logs", log_file="test_cognibot.log")
+
+
+def test_log_file_creation(sync_logger, cleanup_log):
+    logger = sync_logger.get_logger()
+    logger.info("Testing log creation.")
+
+    # Give a little time for file system operations
+    time.sleep(0.1)
+
     assert os.path.exists(LOG_FILE)
 
 
-@pytest.mark.skip(reason="Currently failing due to timing issues.")
-def test_log_content():
-    # Test that logging writes the correct content
+def test_log_content(sync_logger, cleanup_log):
+    logger = sync_logger.get_logger()
+
     test_message = "This is a test log entry."
-    app_logger.info(test_message)
-    wait_for_log_completion(app_logger)
-    wait_for_log_content(LOG_FILE, test_message)
+    logger.info(test_message)
+
+    # Give a little time for file system operations
+    time.sleep(0.1)
 
     with open(LOG_FILE, "r") as log_file:
         logs = log_file.read()
