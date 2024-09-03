@@ -34,7 +34,7 @@ class Cognibot(discord.Bot):
 
     async def on_resumed(self):
         app_logger.info("Bot session resumed")
-    
+
     @tasks.loop(hours=1)
     async def monitor_health(self):
         cpu_usage = psutil.cpu_percent()
