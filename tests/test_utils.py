@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import discord
 from discord.ext import commands
 from utils.utils import (
+    CustomError,
     get_user_id,
     format_response,
     send_large_message,
@@ -53,3 +54,23 @@ async def test_send_large_message():
     assert ctx.followup.send.call_count == 2
     ctx.followup.send.assert_any_call("a" * 2000, ephemeral=True)
     ctx.followup.send.assert_any_call("a" * 1000, ephemeral=True)
+
+
+def test_custom_error_creation():
+    error = CustomError("Test error")
+    assert str(error) == "Test error"
+    assert error.message == "Test error"
+    assert error.details is None
+
+
+def test_custom_error_with_details():
+    error = CustomError("Test error", "Additional details")
+    assert str(error) == "Test error - Details: Additional details"
+    assert error.message == "Test error"
+    assert error.details == "Additional details"
+
+
+def test_custom_error_inheritance():
+    error = CustomError("Test error")
+    assert isinstance(error, Exception)
+    assert isinstance(error, CustomError)

@@ -34,7 +34,22 @@ async def send_large_message(ctx: commands.Context, response: str):
 
 
 class CustomError(Exception):
-    pass
+    def __init__(self, message: str, details: str = None):
+        super().__init__(message)
+        self.message = message
+        self.details = details
+        self.log_error()
+
+    def __str__(self):
+        if self.details:
+            return f"{self.message} - Details: {self.details}"
+        return self.message
+
+    def log_error(self):
+        if self.details:
+            app_logger.error(f"❌ {self.message} - Details: {self.details}")
+        else:
+            app_logger.error(self.message)
 
 
 def handle_error(e):
