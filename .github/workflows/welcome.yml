@@ -1,0 +1,27 @@
+name: Welcome New Contributors
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Greet the contributor
+      if: github.event.sender.type == 'User'
+      run: |
+        ISSUE_COMMENT="Welcome to the Cognibot project, @${{ github.actor }}! We're excited to have your contribution. If you need any help, don't hesitate to ask!"
+        
+        if [ "${{ github.event_name }}" = "issues" ]; then
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST \
+            -d "{\"body\":\"$ISSUE_COMMENT\"}" \
+            ${{ github.event.issue.comments_url }}
+        elif [ "${{ github.event_name }}" = "pull_request" ]; then
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST \
+            -d "{\"body\":\"$ISSUE_COMMENT\"}" \
+            ${{ github.event.pull_request.comments_url }}
+        fi
