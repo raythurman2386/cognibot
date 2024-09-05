@@ -51,4 +51,5 @@ env_vars = {
     # "db_host": os.environ.get("DB_HOST"),
     # "db_url": os.environ.get("DATABASE_URL"),
     "db_type": "sqlite",
+    "DEBUG": os.environ.get("DEBUG", False),
 }

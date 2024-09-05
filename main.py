@@ -20,16 +20,20 @@ class Cognibot(discord.Bot):
         self.command_usage = {}
         self.uptime_start = datetime.now()
         self.error_log = deque(maxlen=100)
+        self.debug = env_vars["DEBUG"]
 
     async def on_ready(self):
         app_logger.info(f"{self.user} is ready and online!")
         self.monitor_health.start()
         self.db.init_db()
+        if self.debug:
+            print(f"{self.user} is ready for development!")
 
     async def on_disconnect(self):
         app_logger.warning("Bot disconnected from Discord")
 
     async def on_connect(self):
+        await super().on_connect()
         app_logger.info("Bot reconnected to Discord")
 
     async def on_resumed(self):
