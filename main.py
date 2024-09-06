@@ -70,7 +70,7 @@ class Cognibot(discord.Bot):
 
 bot = Cognibot(intents=discord.Intents.all())
 
-cogs_list = ["greetings", "openai", "fun", "anthropic"]
+cogs_list = ["greetings", "openai", "fun", "anthropic", "dalle"]
 for cog in cogs_list:
     bot.load_extension(f"cogs.{cog}")
 

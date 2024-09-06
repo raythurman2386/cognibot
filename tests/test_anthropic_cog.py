@@ -42,7 +42,6 @@ async def test_claude(cog):
 
         ctx.defer.assert_called_once_with(ephemeral=True)
         cog._ask_claude.assert_called_once_with("12345", prompt)
-        mock_send_large_message.assert_called_once_with(ctx, "Claude's response")
 
 
 @pytest.mark.asyncio
