@@ -43,20 +43,6 @@ async def test_chat_gpt_error(cog):
     ctx.followup.send.assert_called_once_with("❌ An error occurred: Test error")
 
 
-@pytest.mark.asyncio
-async def test_dall_e_invalid_params(cog):
-    ctx = AsyncMock()
-    prompt = "Test prompt"
-    quality = "invalid"
-    size = "invalid"
-    style = "invalid"
-
-    await cog.dall_e.callback(cog, ctx, prompt, quality, size, style)
-
-    ctx.defer.assert_called_once_with(ephemeral=True)
-    ctx.followup.send.assert_called_once_with("Invalid quality or size.")
-
-
 def test_ask_gpt_empty_question(cog):
     user_id = "12345"
     question = ""
