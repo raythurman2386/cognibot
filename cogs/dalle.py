@@ -14,6 +14,9 @@ class DallEModal(discord.ui.Modal):
     def __init__(self, cog, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.cog = cog
+        self.style = "natural"
+        self.quality = "standard"
+        self.size = "standard"
 
         self.add_item(
             discord.ui.InputText(label="Prompt", style=discord.InputTextStyle.long)
@@ -36,9 +39,9 @@ class DallEModal(discord.ui.Modal):
 
     async def callback(self, interaction: discord.Interaction):
         prompt = self.children[0].value
-        quality = self.children[1].value or "standard"
-        size = self.children[2].value or "standard"
-        style = self.children[3].value or "natural"
+        quality = self.children[1].value or self.quality
+        size = self.children[2].value or self.size
+        style = self.children[3].value or self.style
 
         await interaction.response.send_message(
             "Generating your image... This may take a moment.", ephemeral=True

@@ -12,7 +12,14 @@ class Anthropic(commands.Cog):
         self.bot = bot
         self.db = ChatDatabase()
         self.anthropic = AnthropicClient(api_key=env_vars["anthropic_key"])
-        self.system_message = "You are Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest. You excel at explaining technical concepts and providing code examples with clear explanations tailored to the knowledge level of the user. You have extensive experience pair programming in Python, JavaScript, Java, and more. Your suggestions are always safe, legally and ethically. When you don't know something, you acknowledge that openly rather than guessing."
+        self.temperature = 0.3
+        self.tokens = 500
+        self.default_system_message = """You are Cognibot, an AI assistant Discord Bot created to be helpful, harmless, 
+            and honest. You excel at explaining technical concepts and providing code examples with clear 
+            explanations tailored to the knowledge level of the user. You have extensive experience 
+            pair programming in Python, JavaScript, Java, and more. Your suggestions are always safe, 
+            legally and ethically. When you don't know something, you acknowledge that openly rather than 
+            guessing. Respond with just a sprinkle of humor."""
 
     @discord.slash_command(
         name="claude",
@@ -36,13 +43,6 @@ class Anthropic(commands.Cog):
         self.db.clear_user_chat_log(user_id)
         await ctx.respond("Your chat history has been cleared.", ephemeral=True)
 
-    @discord.slash_command(
-        name="set_system_message", description="Set a custom system message for Claude"
-    )
-    async def set_system_message(self, ctx, *, message):
-        self.system_message = message
-        await ctx.respond("System message updated successfully.", ephemeral=True)
-
     def _ask_claude(self, user_id, question):
         try:
             if len(question) == 0:
@@ -50,15 +50,16 @@ class Anthropic(commands.Cog):
 
             self.db.add_message(user_id, "user", question)
             app_logger.info(f"User message added to database for user {user_id}")
-            chat_log = [
-                msg for msg in self.db.get_chat_log(user_id) if msg["role"] != "system"
-            ]
+
+            system_message_content = self._get_or_create_user_system_message(user_id)
+
+            chat_log = self.db.get_chat_log(user_id)
 
             response = self.anthropic.messages.create(
                 model=env_vars["claude_model"],
-                max_tokens=500,
-                temperature=0.3,
-                system=self.system_message,
+                max_tokens=self.tokens,
+                temperature=self.temperature,
+                system=system_message_content,
                 messages=chat_log,
             )
 
@@ -73,6 +74,25 @@ class Anthropic(commands.Cog):
                 f"❌ Claude generation encountered an error for user {user_id}: {e}"
             )
             return handle_error(e)
+
+    def _get_or_create_user_system_message(self, user_id):
+        user_settings = self.db.read_user_settings(user_id)
+
+        if not user_settings:
+            self.db.create_user_settings(
+                user_id=user_id, anthropic_message=self.default_system_message
+            )
+            return self.default_system_message
+        else:
+            anthropic_message = user_settings[3]
+
+            if not anthropic_message:
+                self.db.update_user_settings(
+                    user_id=user_id, anthropic_message=self.default_system_message
+                )
+                return self.default_system_message
+
+            return anthropic_message
 
 
 def setup(bot):
