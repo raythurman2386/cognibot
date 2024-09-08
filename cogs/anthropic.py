@@ -35,6 +35,18 @@ class Anthropic(commands.Cog):
             await ctx.followup.send(f"❌ An error occurred: {str(e)}")
 
     @discord.slash_command(
+        name="set_claude_message", description="Set a custom system message for Claude"
+    )
+    async def set_claude_message(self, ctx, *, message):
+        try:
+            message = self._update_user_system_message(str(ctx.author.id), message)
+
+            await ctx.respond(message, ephemeral=True)
+        except Exception as e:
+            handle_error(e)
+            await ctx.followup.send(f"❌ An error occurred: {str(e)}")
+
+    @discord.slash_command(
         name="clear_chat",
         description="Clear your chat history",
     )
@@ -87,12 +99,20 @@ class Anthropic(commands.Cog):
             anthropic_message = user_settings[3]
 
             if not anthropic_message:
-                self.db.update_user_settings(
+                self._update_user_system_message(
                     user_id=user_id, anthropic_message=self.default_system_message
                 )
                 return self.default_system_message
 
             return anthropic_message
+
+    def _update_user_system_message(self, user_id: str, anthropic_message: str):
+        _ensure_user_exists = self._get_or_create_user_system_message(user_id)
+        self.db.update_user_settings(
+            user_id=user_id, anthropic_message=anthropic_message
+        )
+        app_logger.info(f"Anthropic system message updated for user {user_id}")
+        return "Anthropic system message updated successfully!"
 
 
 def setup(bot):

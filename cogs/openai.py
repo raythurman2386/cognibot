@@ -34,6 +34,19 @@ class OpenAI(commands.Cog):
         except Exception as e:
             await ctx.followup.send(f"❌ An error occurred: {str(e)}")
 
+    @discord.slash_command(
+        name="set_chatgpt_message",
+        description="Set a custom system message for ChatGPT",
+    )
+    async def set_chatgpt_message(self, ctx, *, message):
+        try:
+            message = self._update_user_system_message(str(ctx.author.id), message)
+
+            await ctx.respond(message, ephemeral=True)
+        except Exception as e:
+            handle_error(e)
+            await ctx.followup.send(f"❌ An error occurred: {str(e)}")
+
     def _ask_gpt(self, user_id, question):
         try:
             if len(question) == 0:
@@ -85,12 +98,18 @@ class OpenAI(commands.Cog):
             openai_message = user_settings[2]
 
             if not openai_message:
-                self.db.update_user_settings(
+                self._update_user_system_message(
                     user_id=user_id, openai_message=self.default_system_message
                 )
                 return self.default_system_message
 
             return openai_message
+
+    def _update_user_system_message(self, user_id: str, openai_message: str):
+        _ensure_user_exists = self._get_or_create_user_system_message(user_id)
+        self.db.update_user_settings(user_id=user_id, openai_message=openai_message)
+        app_logger.info(f"ChatGPT system message updated for user {user_id}")
+        return "ChatGPT's system message updated successfully!"
 
 
 def setup(bot):
