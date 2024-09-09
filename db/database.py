@@ -2,6 +2,8 @@ import os
 import sqlite3
 from contextlib import contextmanager
 
+from utils.env import env_vars
+
 
 class ChatDatabase:
     def __init__(self, db_name="chat_log.sqlite"):
@@ -10,6 +12,26 @@ class ChatDatabase:
             db_name if os.path.dirname(db_name) else f"{self.db_dir}/{db_name}"
         )
         self._ensure_db_directory()
+        self.TABLE_DEFINITIONS = {
+            "chat_log": """
+            CREATE TABLE IF NOT EXISTS chat_log (
+                id INTEGER PRIMARY KEY,
+                user_id TEXT,
+                role TEXT,
+                content TEXT
+            )
+        """,
+            "user_system_settings": """
+            CREATE TABLE IF NOT EXISTS user_system_settings (
+                id INTEGER PRIMARY KEY,
+                user_id TEXT UNIQUE,
+                openai_system_message TEXT DEFAULT '',
+                anthropic_system_message TEXT DEFAULT '',
+                temperature REAL DEFAULT 0.3,
+                tokens INTEGER DEFAULT 500
+            )
+        """,
+        }
 
     def _ensure_db_directory(self):
         db_dir = os.path.dirname(self.db_path)
@@ -28,28 +50,8 @@ class ChatDatabase:
 
     def init_db(self):
         with self._db_session() as c:
-            c.execute(
-                """
-                CREATE TABLE IF NOT EXISTS chat_log (
-                    id INTEGER PRIMARY KEY,
-                    user_id TEXT,
-                    role TEXT,
-                    content TEXT
-                )
-                """
-            )
-            c.execute(
-                """
-                CREATE TABLE IF NOT EXISTS user_system_settings (
-                    id INTEGER PRIMARY KEY,
-                    user_id TEXT UNIQUE,
-                    openai_system_message TEXT DEFAULT '',
-                    anthropic_system_message TEXT DEFAULT '',
-                    temperature REAL DEFAULT 0.3,
-                    tokens INTEGER DEFAULT 500
-                )
-                """
-            )
+            for table_name, create_statement in self.TABLE_DEFINITIONS.items():
+                c.execute(create_statement)
 
     # CRUD Operations for chat_log
     def add_message(self, user_id, role, content):
@@ -81,8 +83,8 @@ class ChatDatabase:
     def create_user_settings(
         self,
         user_id,
-        openai_message="",
-        anthropic_message="",
+        openai_message=env_vars["default_system_message"],
+        anthropic_message=env_vars["default_system_message"],
         temperature=0.3,
         tokens=500,
     ):
@@ -94,6 +96,7 @@ class ChatDatabase:
                 """,
                 (user_id, openai_message, anthropic_message, temperature, tokens),
             )
+        return self.read_user_settings(user_id)
 
     def read_user_settings(self, user_id):
         with self._db_session() as c:

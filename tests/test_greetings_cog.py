@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 import discord
 from discord.ext import commands
 from cogs.greetings import Greetings  # adjust this import as needed
@@ -54,7 +54,23 @@ async def test_greet(cog):
 @pytest.mark.asyncio
 async def test_on_member_join(cog):
     member = AsyncMock()
+    member.id = 12345
     member.mention = "@newuser"
-    await cog.on_member_join(member)
-    member.send.assert_called_once()
-    assert "@newuser" in member.send.call_args[0][0]
+    member.send = AsyncMock()
+
+    with patch.object(cog.db, "create_user_settings", return_value=None) as mock_create_user_settings:
+        await cog.on_member_join(member)
+        mock_create_user_settings.assert_called_once_with(12345)
+        member.send.assert_called_once()
+
+        welcome_message = f"""Welcome to the server, {member.mention}! 👋
+
+We're so glad you decided to join us. Please take a moment to review the #welcome-and-rules channel to get started.
+
+If you have any questions, feel free to ask one of our moderators.
+
+We hope you enjoy your time here! Don't hesitate to introduce yourself in #introductions once you're settled in.
+
+- The Ravenwood Team"""
+        member.send.assert_called_once_with(welcome_message)
+        assert "@newuser" in member.send.call_args[0][0]

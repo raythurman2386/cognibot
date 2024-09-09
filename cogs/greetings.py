@@ -1,10 +1,13 @@
 import discord
 from discord.ext import commands
 
+from db.database import ChatDatabase
+
 
 class Greetings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db = ChatDatabase()
 
     @discord.slash_command()
     async def hello(self, ctx):
@@ -24,6 +27,7 @@ class Greetings(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        self.db.create_user_settings(member.id)
         await member.send(
             f"""Welcome to the server, {member.mention}! 👋
 
