@@ -58,7 +58,9 @@ async def test_on_member_join(cog):
     member.mention = "@newuser"
     member.send = AsyncMock()
 
-    with patch.object(cog.db, "create_user_settings", return_value=None) as mock_create_user_settings:
+    with patch.object(
+        cog.db, "create_user_settings", return_value=None
+    ) as mock_create_user_settings:
         await cog.on_member_join(member)
         mock_create_user_settings.assert_called_once_with(12345)
         member.send.assert_called_once()
