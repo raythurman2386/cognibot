@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import os
 import psutil
 import platform
 from datetime import datetime
@@ -12,6 +13,7 @@ from utils.logger import app_logger
 app = Flask(__name__)
 
 bot_status = None
+db_path = "db/chat_log.sqlite"
 
 
 def update_bot_status(status):
@@ -41,7 +43,6 @@ def periodic_status_check(interval=60):
         time.sleep(interval)
 
 
-@lru_cache(maxsize=1)
 def get_system_info():
     try:
         cpu_percent = psutil.cpu_percent()
@@ -53,6 +54,7 @@ def get_system_info():
         net_io = psutil.net_io_counters()
         boot_time = datetime.fromtimestamp(psutil.boot_time())
         uptime = datetime.now() - boot_time
+        db_size = os.path.getsize(db_path) / (1024 * 1024)
 
         return {
             "cpu_percent": cpu_percent,
@@ -61,6 +63,7 @@ def get_system_info():
             "temp": temp,
             "net_io": net_io,
             "uptime": uptime,
+            "db_size": db_size,
         }
     except Exception as e:
         app_logger.error(f"Error fetching system info: {str(e)}")
