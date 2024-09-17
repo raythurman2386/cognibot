@@ -1,0 +1,9 @@
+<div>
+    <h2 class="text-xl font-semibold mb-4 text-gray-700">CPU Usage</h2>
+    <div class="relative pt-1">
+        <div class="overflow-hidden h-4 mb-4 text-xs flex rounded bg-gray-200">
+            <div style="width:{{ system_info.cpu_percent }}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+        </div>
+        <p class="text-right">{{ system_info.cpu_percent }}%</p>
+    </div>
+</div>
