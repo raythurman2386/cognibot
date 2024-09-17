@@ -3,7 +3,6 @@ import os
 import psutil
 import platform
 from datetime import datetime
-from functools import lru_cache
 import subprocess
 import threading
 import time
@@ -36,7 +35,7 @@ def check_service_status():
         return f"error: {str(e)}"
 
 
-def periodic_status_check(interval=60):
+def periodic_status_check(interval=10):
     while True:
         status = check_service_status()
         update_bot_status(status)
@@ -87,6 +86,30 @@ def home():
     except Exception as e:
         app_logger.error(f"Error in dashboard home route: {str(e)}")
         return "An error occurred", 500
+
+
+# HTMX update routes for specific sections
+@app.route("/update_cpu")
+def update_cpu():
+    system_info = get_system_info()
+    return render_template("components/cpu_usage.html", system_info=system_info)
+
+
+@app.route("/update_memory")
+def update_memory():
+    system_info = get_system_info()
+    return render_template("components/memory_usage.html", system_info=system_info)
+
+
+@app.route("/update_disk")
+def update_disk():
+    system_info = get_system_info()
+    return render_template("components/disk_usage.html", system_info=system_info)
+
+
+@app.route("/update_bot_status")
+def update_bot_status_view():
+    return render_template("components/bot_status.html", bot_status=bot_status)
 
 
 def run_flask_app():
