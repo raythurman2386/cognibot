@@ -48,7 +48,7 @@ def get_system_info():
         memory = psutil.virtual_memory()
         disk = psutil.disk_usage("/")
         temperatures = psutil.sensors_temperatures()
-        cpu_thermal = temperatures.get("coretemp")
+        cpu_thermal = temperatures.get("cpu_thermal")
         temp = cpu_thermal[0].current if cpu_thermal else "N/A"
         net_io = psutil.net_io_counters()
         boot_time = datetime.fromtimestamp(psutil.boot_time())
