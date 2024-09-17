@@ -37,6 +37,9 @@ echo "If the service is installed, the bot will now be restarted. Otherwise, run
 if sudo systemctl is-active --quiet cognibot.service; then
     echo "Restarting Cognibot..."
     sudo systemctl restart cognibot.service
+    if sudo systemctl is-active --quiet cognidash.service; then
+      echo "Restarting Dashboard..."
+      sudo systemctl restart cognidash.service
 else
     echo -e "\nBot service is not active, run the install script or run the bot with 'python main.py'.\n"
 fi

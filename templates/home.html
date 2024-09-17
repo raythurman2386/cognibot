@@ -10,6 +10,26 @@
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">CogniDash</h1>
+        <div class="flex justify-center space-x-4 mb-6">
+            <button hx-post="/stop_bot" hx-target="#bot-action-message" hx-swap="innerHTML"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow">
+                Stop Bot
+            </button>
+
+            <button hx-post="/restart_bot" hx-target="#bot-action-message" hx-swap="innerHTML"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow">
+                Restart Bot
+            </button>
+
+            <button hx-post="/update_bot" hx-target="#bot-action-message" hx-swap="innerHTML"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow">
+                Update Bot
+            </button>
+        </div>
+
+        <!-- Status message -->
+        <p id="bot-action-message" class="text-center text-gray-600 mb-8"></p>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="bg-white rounded-lg shadow-md p-6"
                  hx-get="/update_bot_status"
@@ -42,9 +62,11 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">CPU Temperature</h2>
-                <p class="text-2xl font-bold text-orange-500">{{ system_info.temp }}°C</p>
+            <div class="bg-white rounded-lg shadow-md p-6"
+                 hx-get="/update_temp"
+                 hx-trigger="load, every 10s">
+                {% include "components/cpu_temperature.html" %}
+            >
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6">

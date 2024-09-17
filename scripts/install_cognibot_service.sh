@@ -11,8 +11,8 @@ fi
 # Define variables
 SERVICE_NAME="cognibot"
 SERVICE_DESCRIPTION="Cognibot Discord Bot"
-WORKING_DIRECTORY="/cognibot"
-EXEC_START="/cognibot/venv/bin/python /cognibot/main.py"
+WORKING_DIRECTORY="/home/<user>/cognibot" # Update <user> to your Pi's user
+EXEC_START="/home/<user>/cognibot/venv/bin/python /home/<user>/cognibot/main.py"
 USER="pi"  # or whatever user you want the service to run as
 
 # Create service file

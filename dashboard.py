@@ -12,6 +12,7 @@ from utils.logger import app_logger
 app = Flask(__name__)
 
 bot_status = None
+current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = "db/chat_log.sqlite"
 
 
@@ -49,7 +50,17 @@ def get_system_info():
         disk = psutil.disk_usage("/")
         temperatures = psutil.sensors_temperatures()
         cpu_thermal = temperatures.get("cpu_thermal")
-        temp = cpu_thermal[0].current if cpu_thermal else "N/A"
+        temp = (
+            # Raspberry Pi Temp Sensor
+            cpu_thermal[0].current
+            if cpu_thermal
+            else (
+                # Temp sensor on my machine
+                temperatures.get("coretemp")[0].current
+                if temperatures.get("coretemp")
+                else "N/A"
+            )
+        )
         net_io = psutil.net_io_counters()
         boot_time = datetime.fromtimestamp(psutil.boot_time())
         uptime = datetime.now() - boot_time
@@ -107,9 +118,63 @@ def update_disk():
     return render_template("components/disk_usage.html", system_info=system_info)
 
 
+@app.route("/update_temp")
+def update_temp():
+    system_info = get_system_info()
+    return render_template("components/cpu_temperature.html", system_info=system_info)
+
+
 @app.route("/update_bot_status")
 def update_bot_status_view():
     return render_template("components/bot_status.html", bot_status=bot_status)
+
+
+@app.route("/stop_bot", methods=["POST"])
+def stop_bot():
+    shutdown_script = os.path.join(current_dir, "scripts", "shutdown.sh")
+
+    try:
+        result = subprocess.run(
+            [shutdown_script], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        if result.returncode == 0:
+            return "Bot stopped successfully"
+        else:
+            return f"Failed to stop bot: {result.stderr.decode()}"
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+@app.route("/restart_bot", methods=["POST"])
+def restart_bot():
+    restart_script = os.path.join(current_dir, "scripts", "restart.sh")
+    try:
+        result = subprocess.run(
+            [restart_script],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if result.returncode == 0:
+            return "Bot restarted successfully"
+        else:
+            return f"Failed to restart bot: {result.stderr.decode()}"
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+@app.route("/update_bot", methods=["POST"])
+def update_bot():
+    update_script = os.path.join(current_dir, "scripts", "update.sh")
+    try:
+        result = subprocess.run(
+            [update_script], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        if result.returncode == 0:
+            return "Bot updated successfully"
+        else:
+            return f"Failed to update bot: {result.stderr.decode()}"
+    except Exception as e:
+        return f"Error: {str(e)}"
 
 
 def run_flask_app():
