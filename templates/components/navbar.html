@@ -1,0 +1,22 @@
+<nav class="bg-gray-800 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="text-white text-2xl font-bold">
+            CogniDash
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center text-white"
+                 hx-get="/update_bot_status"
+                 hx-trigger="load, every 60s"
+            >
+                {% include "components/bot_status.html" %}
+            </div>
+
+            <div class="flex items-center text-white"
+                 hx-get="/update_temp"
+                 hx-trigger="load, every 10s"
+            >
+                {% include "components/cpu_temperature.html" %}
+            </div>
+        </div>
+    </div>
+</nav>

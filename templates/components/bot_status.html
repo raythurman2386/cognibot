@@ -1,6 +1,6 @@
-<div>
-    <h2 class="text-xl font-semibold mb-4 text-gray-700">Bot Status</h2>
-    <p class="text-2xl font-bold {{ 'text-green-500' if bot_status == 'active' else 'text-red-500' }}">
-        {{ bot_status }}
-    </p>
+<div class="flex flex-row">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {{ 'text-green-500' if bot_status == 'active' else 'text-red-500' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+    </svg>
+    <span class="ml-2">{{ bot_status.capitalize() }}</span>
 </div>

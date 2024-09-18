@@ -132,7 +132,6 @@ def update_bot_status_view():
 @app.route("/stop_bot", methods=["POST"])
 def stop_bot():
     shutdown_script = os.path.join(current_dir, "scripts", "shutdown.sh")
-
     try:
         result = subprocess.run(
             [shutdown_script], stdout=subprocess.PIPE, stderr=subprocess.PIPE
