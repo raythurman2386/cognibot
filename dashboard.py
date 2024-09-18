@@ -82,7 +82,7 @@ def get_system_info():
 
 def get_last_20_lines(file_path, num_lines=20):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             lines = file.readlines()
             return lines[-num_lines:]
     except Exception as e:
