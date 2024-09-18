@@ -58,7 +58,7 @@
 
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4 text-gray-700">Database Size</h2>
-            <p class="text-lg">{{ system_info.db_size }} MB</p>
+            <p class="text-lg">{{ '{:.2f}'.format(system_info.db_size) }} MB</p>
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-6">
