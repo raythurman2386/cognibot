@@ -1,0 +1,7 @@
+<div id="log-container" class="overflow-auto max-h-64 bg-gray-100 p-4 rounded-md">
+    <ul class="text-sm text-gray-700">
+        {% for line in logs %}
+        <li class="mb-1">{{ line }}</li>
+        {% endfor %}
+    </ul>
+</div>

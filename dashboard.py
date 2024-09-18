@@ -80,6 +80,16 @@ def get_system_info():
         return None
 
 
+def get_last_20_lines(file_path, num_lines=20):
+    try:
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+            return lines[-num_lines:]
+    except Exception as e:
+        app_logger.error(f"Error reading log file: {str(e)}")
+        return ["Error fetching logs."]
+
+
 @app.route("/")
 def home():
     try:
@@ -99,7 +109,6 @@ def home():
         return "An error occurred", 500
 
 
-# HTMX update routes for specific sections
 @app.route("/update_cpu")
 def update_cpu():
     system_info = get_system_info()
@@ -174,6 +183,13 @@ def update_bot():
             return f"Failed to update bot: {result.stderr.decode()}"
     except Exception as e:
         return f"Error: {str(e)}"
+
+
+@app.route("/logs")
+def fetch_logs():
+    log_file_path = os.path.join(current_dir, "Logs", "cognibot.log")
+    logs = get_last_20_lines(log_file_path)
+    return render_template("components/logs.html", logs=logs)
 
 
 def run_flask_app():
